@@ -36,12 +36,20 @@ with tab4:
                      hover_name="Carrera_SURDAO", title="Deserción vs Capital")
     st.plotly_chart(fig, width="stretch")
 
-with tab5:
-    fig = px.scatter(df.head(20), x="Desercion_SIES_pct", y="Score",
+  with tab5:
+    st.subheader("🔵 Deserción vs Empleabilidad")
+    
+    # TU CÓDIGO PERFECTO:
+    if "Empleabilidad_%" not in df.columns:
+        st.warning("Creando Empleabilidad_% desde Score")
+        df["Empleabilidad_%"] = df["Score"]
+    
+    fig = px.scatter(df.head(20), x="Desercion_SIES_pct", y="Empleabilidad_%",
                      size="Capital_Recuperable", color="Universidad",
-                     title="Deserción vs Score (Empleabilidad proxy)")
+                     title="Bubble: Deserción vs Empleabilidad vs Capital")
     st.plotly_chart(fig, width="stretch")
 
-st.markdown("[Repo](https://github.com/TIANHH77/-Earth-Commons-DAO)")
+
+
 
 
