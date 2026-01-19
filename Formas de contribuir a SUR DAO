@@ -1,0 +1,24 @@
+## 🤝 Formas de contribuir a SUR DAO
+
+Este proyecto es abierto y comunitario. Hay distintas maneras de participar según tus intereses y habilidades:
+
+### 👩‍💻 Desde el código
+- Mejorar el dashboard (`src/dashboard_real_sies.py`).
+- Proponer nuevas visualizaciones o KPIs.
+- Optimizar el flujo de datos y dependencias.
+
+### 📊 Desde la base de datos
+- Ingresar información sobre personas, carreras y proyectos disponibles para trueque.
+- Validar y enriquecer los datasets (`data/`).
+- Documentar nuevas fuentes de datos.
+
+### 🌍 Desde otros proyectos
+- Integrar iniciativas que ya ejecutas bajo la lógica de la **capa sombra**.
+- Conectar experiencias territoriales con el dashboard.
+- Compartir aprendizajes y metodologías.
+
+---
+
+## 🧩 Filosofía
+No importa si tu aporte es técnico, narrativo o comunitario:  
+**cada contribución fortalece el común y amplía la capa sombra.**

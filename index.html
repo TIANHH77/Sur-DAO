@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Earth Commons DAO — Portal institucional</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f1115; --card:#171a21; --text:#e6e8ef; --muted:#aeb6c2; --accent:#5cc8ff; --line:#242835; }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto}
+    header{padding:32px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:10}
+    header .title{font-weight:600;font-size:20px}
+    nav a{margin-right:16px;color:var(--muted);text-decoration:none}
+    nav a:hover{color:var(--accent)}
+    main{max-width:960px;margin:0 auto;padding:24px 20px}
+    section{margin:28px 0;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+    h2{margin:0 0 12px 0;font-size:20px}
+    h3{margin:18px 0 8px 0;font-size:16px;color:var(--muted)}
+    p{line-height:1.6}
+    ul{margin:10px 0 0 18px}
+    a.doc{color:var(--accent);text-decoration:none}
+    a.doc:hover{text-decoration:underline}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th, td{border:1px solid var(--line);padding:10px;text-align:left}
+    th{background:#1d2130}
+    footer{color:var(--muted);padding:24px 20px;border-top:1px solid var(--line);text-align:center}
+    .tag{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad:true });</script>
+</head>
+<body>
+  <header>
+    <div class="title">Earth Commons DAO — Portal institucional</div>
+    <nav>
+      <a href="#descripcion">Descripción</a>
+      <a href="#indice">Índice maestro</a>
+      <a href="#manifiestos">Manifiestos</a>
+      <a href="#tecnico">Documentos técnicos</a>
+      <a href="#comparativa">Comparativa</a>
+      <a href="#diagrama">Diagrama</a>
+      <a href="#kpis">KPIs</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="descripcion">
+      <h2>Descripción</h2>
+      <p>
+        Este portal reúne la documentación institucional y técnica de la lógica espiral y los nodos autogestionados
+        en un marco DAO. El objetivo es transformar estructuras rígidas en trayectorias acompañadas con
+        transparencia, trazabilidad y coherencia sistémica.
+      </p>
+      <span class="tag">Tono anónimo</span>
+      <span class="tag">Institucional</span>
+      <span class="tag">DAO / Gobernanza</span>
+    </section>
+
+    <section id="indice">
+      <h2>Índice maestro</h2>
+      <ul>
+        <li><a class="doc" href="manifiestos/Indice-Maestro.md">Índice maestro (MD)</a></li>
+        <li><a class="doc" href="manifiestos/Documento-Unificado.md">Documento unificado (MD)</a></li>
+      </ul>
+      <p style="color:var(--muted)">
+        Nota: Si estos enlaces no renderizan como HTML, conviértelos a .html o emplea Jekyll para procesar Markdown.
+      </p>
+    </section>
+
+    <section id="manifiestos">
+      <h2>Manifiestos</h2>
+      <ul>
+        <li><a class="doc" href="manifiestos/Manifiesto-Parte-2.md">Manifiesto Parte 2 — Trayectorias acompañadas</a></li>
+        <li><a class="doc" href="manifiestos/Manifiesto-Parte-3.md">Manifiesto Parte 3 — Arquitectura técnica DAO</a></li>
+        <li><a class="doc" href="manifiestos/Manifiesto-Parte-4.md">Manifiesto Parte 4 — Capa de sombra: trueque y depuración</a></li>
+      </ul>
+      <h3>Principios</h3>
+      <ul>
+        <li>Trayectorias acompañadas</li>
+        <li>Resonancia sistémica</li>
+        <li>Infraestructura porosa</li>
+        <li>DAO como base de transparencia y trazabilidad</li>
+      </ul>
+    </section>
+
+    <section id="tecnico">
+      <h2>Documentos técnicos</h2>
+      <ul>
+        <li><a class="doc" href="manifiestos/Roadmap-Tecnico.md">Roadmap técnico de la espiral DAO</a></li>
+        <li><a class="doc" href="manifiestos/Comparativa-Sistemas.md">Comparativa: sistemas pesados vs. espiral DAO</a></li>
+      </ul>
+      <h3>Tabla comparativa (resumen)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Aspecto</th>
+            <th>Sistemas pesados</th>
+            <th>Espiral DAO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Gestión del tiempo</td><td>Mantener estructuras</td><td>Acompañar trayectorias</td></tr>
+          <tr><td>Estructura</td><td>Rígida y fragmentada</td><td>Resonante y modular</td></tr>
+          <tr><td>Relación con la persona</td><td>Número/caso</td><td>Trayectoria irrepetible</td></tr>
+          <tr><td>Procesos</td><td>Listas, acumulación</td><td>Presencia continua</td></tr>
+          <tr><td>Infraestructura</td><td>Cerrada</td><td>Porosa y comunitaria</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="comparativa">
+      <h2>Capa de sombra: rigor técnico</h2>
+      <p>
+        La capa de sombra gestiona excedentes, residuos y flujos invisibles mediante trueque consentido, depuración
+        y auditoría comunitaria con registro en DAO para trazabilidad y legitimidad institucional.
+      </p>
+      <ul>
+        <li><a class="doc" href="manifiestos/Manifiesto-Parte-4.md">Artículo técnico (APA) — Capa de sombra</a></li>
+      </ul>
+    </section>
+
+    <section id="diagrama">
+      <h2>Diagrama conceptual</h2>
+      <div class="mermaid">
+        graph TD
+            A[Sistemas pesados] --> B[Espiral DAO]
+            B --> C[Capa sombra]
+            C --> D[Transparencia comunitaria]
+      </div>
+    </section>
+
+    <section id="kpis">
+      <h2>📊 Indicadores Capa Sombra</h2>
+      <ul>
+        <li>Estudiantes en riesgo alto: <strong>33</strong></li>
+        <li>Becas inactivas: <strong>25</strong></li>
+        <li>Impacto estimado en años-matrícula recuperados: <strong>150.0</strong></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>© Earth Commons DAO — Documentación institucional. Este portal no expone identidades personales.</p>
+    <p>
+      <img src="https://img.shields.io/badge/Open%20Source-Yes-blue" />
+      <img src="https://img.shields.io/badge/Community-Driven-orange" />
+      <img src="https://img.shields.io/badge/Custodia%20Ética-Activa-green" />
+    </p>
+  </footer>
+</body>
+</html>

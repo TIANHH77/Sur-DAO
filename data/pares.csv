@@ -1,0 +1,5 @@
+ID,ApoyoPar,Grupo,Descripcion,CentroEstudiantes
+001,True,Tutoría Psicología,"Tiene un compañero que lo acompaña","Activo"
+002,False,Ninguno,"No reporta apoyo entre pares","Inactivo"
+003,True,Ingeniería Civil Mentores,"Participa en grupo de mentoría","Activo"
+004,True,Derecho Debate,"Integra grupo de debate","Activo"
