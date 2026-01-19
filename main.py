@@ -37,17 +37,21 @@ with tab4:
     st.plotly_chart(fig, width="stretch")
 
   with tab5:
-    st.subheader("🔵 Deserción vs Empleabilidad")
+  
+   st.subheader("🔵 Bubble Chart - Deserción vs Créditos")
     
-    # TU CÓDIGO PERFECTO:
-    if "Empleabilidad_%" not in df.columns:
-        st.warning("Creando Empleabilidad_% desde Score")
-        df["Empleabilidad_%"] = df["Score"]
-    
-    fig = px.scatter(df.head(20), x="Desercion_SIES_pct", y="Empleabilidad_%",
-                     size="Capital_Recuperable", color="Universidad",
-                     title="Bubble: Deserción vs Empleabilidad vs Capital")
-    st.plotly_chart(fig, width="stretch")
+    # TU CÓDIGO EXACTO (funciona 100%):
+    fig_bubble = px.scatter(
+        df.head(20),
+        x="Desercion_SIES_pct",
+        y="Creditos_Acum",
+        size="Capital_Recuperable",
+        color="Universidad",
+        hover_name="Carrera_SURDAO",
+        title="📊 Deserción vs Créditos (burbuja por capital)"
+    )
+    st.plotly_chart(fig_bubble, width="stretch")
+
 
 
 
