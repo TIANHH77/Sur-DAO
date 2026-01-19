@@ -12,9 +12,12 @@ def load_data():
     return df
 
 df = load_data()
-st.write("Columnas:", df.columns.tolist())  # Debug
+st.write("📑 Columnas disponibles:", df.columns.tolist())  # Debug
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 KPIs", "📄 Tabla", "📊 Barras", "📈 Scatter", "🔵 Bubble"])
+# Tabs principales
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["📊 KPIs", "📄 Tabla", "📊 Barras", "📈 Scatter", "🔵 Bubble"]
+)
 
 with tab1:
     col1, col2, col3 = st.columns(3)
@@ -26,14 +29,25 @@ with tab2:
     st.dataframe(df, width="stretch")
 
 with tab3:
-    fig = px.bar(df.head(10), x="Carrera_SURDAO", y="Capital_Recuperable", 
-                 color="Universidad", title="Capital por Carrera")
+    fig = px.bar(
+        df.head(10),
+        x="Carrera_SURDAO",
+        y="Capital_Recuperable",
+        color="Universidad",
+        title="Capital por Carrera"
+    )
     st.plotly_chart(fig, width="stretch")
 
 with tab4:
-    fig = px.scatter(df.head(20), x="Desercion_SIES_pct", y="Capital_Recuperable",
-                     size="Creditos_Acum", color="Universidad",
-                     hover_name="Carrera_SURDAO", title="Deserción vs Capital")
+    fig = px.scatter(
+        df.head(20),
+        x="Desercion_SIES_pct",
+        y="Capital_Recuperable",
+        size="Creditos_Acum",
+        color="Universidad",
+        hover_name="Carrera_SURDAO",
+        title="Deserción vs Capital"
+    )
     st.plotly_chart(fig, width="stretch")
 
 with tab5:
@@ -48,6 +62,7 @@ with tab5:
         title="📊 Deserción vs Créditos (burbuja por capital)"
     )
     st.plotly_chart(fig_bubble, width="stretch")
+
 
   
 
