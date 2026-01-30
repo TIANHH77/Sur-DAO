@@ -74,6 +74,28 @@ pares   = load_csv("data/pares.csv", index_col="ID")
 datasets = [real, hibrido, becas, junaeb, mineduc, usach, pares]
 datasets = [normalize_columns(df) for df in datasets]
 real, hibrido, becas, junaeb, mineduc, usach, pares = datasets
+# 👀 Depuración: mostrar columnas antes del merge
+st.write("Columnas en REAL:", real.columns.tolist())
+st.write("Columnas en HIBRIDO:", hibrido.columns.tolist())
+st.write("Columnas en USACH:", usach.columns.tolist())
+st.write("Columnas en BECAS:", becas.columns.tolist())
+st.write("Columnas en JUNAEB:", junaeb.columns.tolist())
+st.write("Columnas en MINEDUC:", mineduc.columns.tolist())
+st.write("Columnas en PARES:", pares.columns.tolist())
+# Normalización + renombrado seguro
+datasets = [real, hibrido, becas, junaeb, mineduc, usach, pares]
+datasets = [normalize_columns(df) for df in datasets]
+real, hibrido, becas, junaeb, mineduc, usach, pares = datasets
+
+# 🔧 Renombrar clave automáticamente
+for df in [real, hibrido, usach]:
+    if "Carrera" in df.columns:
+        df.rename(columns={"Carrera": "carrera"}, inplace=True)
+    if "programa" in df.columns:
+        df.rename(columns={"programa": "carrera"}, inplace=True)
+
+
+
 
 # -----------------------------
 # Merge maestro
