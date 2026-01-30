@@ -1,5 +1,0 @@
-ID,Carrera,CategoriaRiesgo,PuntajeRiesgo
-001,Psychology,🔴 Riesgo alto,70
-002,Engineering,🟠 Riesgo medio,55
-003,Law,🟡 Riesgo leve,40
-004,Medicine,🟢 Sin riesgo,20
