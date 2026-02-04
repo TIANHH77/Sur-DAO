@@ -3,7 +3,8 @@
     "metricas": {
         "desercion_primer_ano": 35.27,
         "capital_social_riesgo": "22.6M (Estimado)",
-        "estudiantes_en_sombra": 33
+        "estudiantes_en_sombra": 33,
+        "sobreduracion_promedio": "4.7 semestres"
     },
     "contexto": "Datos extraídos de SIES 2025 - Procesado por Sur DAO"
 }
