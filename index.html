@@ -3,136 +3,165 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Earth Commons DAO — Portal institucional</title>
+  <title>Earth Commons DAO — Surdaog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#0f1115; --card:#171a21; --text:#e6e8ef; --muted:#aeb6c2; --accent:#5cc8ff; --line:#242835; }
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto}
-    header{padding:32px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:10}
-    header .title{font-weight:600;font-size:20px}
-    nav a{margin-right:16px;color:var(--muted);text-decoration:none; font-size: 14px;}
-    nav a:hover{color:var(--accent)}
-    main{max-width:960px;margin:0 auto;padding:24px 20px}
-    section{margin:28px 0;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
-    h2{margin:0 0 12px 0;font-size:20px; color: var(--accent);}
-    h3{margin:18px 0 8px 0;font-size:16px;color:var(--muted)}
-    p{line-height:1.6; color: var(--text)}
-    ul{margin:10px 0 0 18px}
-    li{margin-bottom: 8px;}
-    a.doc{color:var(--accent);text-decoration:none}
-    a.doc:hover{text-decoration:underline}
-    .kpi-box { background: #1d2130; padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); }
-    footer{color:var(--muted);padding:24px 20px;border-top:1px solid var(--line);text-align:center; font-size: 12px;}
-    .tag{display:inline-block;padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px; margin-right: 5px;}
+    :root { 
+      --bg:#0f1115; 
+      --card:#171a21; 
+      --text:#e6e8ef; 
+      --muted:#aeb6c2; 
+      --accent:#5cc8ff; 
+      --line:#242835; 
+      --success:#4caf50;
+    }
+    * { box-sizing: border-box; }
+    body { 
+      margin: 0; 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+    }
+    header { 
+      padding: 60px 20px; 
+      border-bottom: 1px solid var(--line); 
+      text-align: center;
+      background: linear-gradient(rgba(15,17,21,0.9), rgba(15,17,21,0.9));
+    }
+    .title { font-weight: 600; font-size: 28px; color: var(--accent); letter-spacing: -1px; }
+    nav { margin-top: 20px; }
+    nav a { margin: 0 10px; color: var(--muted); text-decoration: none; font-size: 14px; }
+    nav a:hover { color: var(--accent); }
     
+    main { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    section { 
+      margin-bottom: 40px; 
+      padding: 30px; 
+      background: var(--card); 
+      border: 1px solid var(--line); 
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    h2 { margin: 0 0 15px 0; font-size: 22px; color: var(--accent); }
+    p { line-height: 1.7; color: var(--muted); }
+    
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+    .kpi-card { background: var(--bg); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent); }
+    .kpi-value { display: block; font-size: 24px; font-weight: bold; color: #fff; }
+    .kpi-label { font-size: 12px; color: var(--muted); text-transform: uppercase; }
+
     /* Estilos Calculadora */
-    .calc-container { display: grid; gap: 15px; background: #11141b; padding: 20px; border-radius: 8px; margin-top: 15px; }
-    input[type=number] { background: var(--bg); border: 1px solid var(--line); color: white; padding: 8px; border-radius: 4px; }
-    button { background: var(--accent); color: #000; border: none; padding: 12px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-    button:hover { opacity: 0.8; }
+    .calc-box { background: #11141b; padding: 25px; border-radius: 8px; border: 1px dashed var(--line); }
+    .input-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-size: 14px; }
+    input[type=number], input[type=range] { width: 100%; margin-top: 10px; }
+    
+    button { 
+      width: 100%; 
+      background: var(--accent); 
+      color: #000; 
+      border: none; 
+      padding: 15px; 
+      font-weight: bold; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-size: 16px;
+    }
+    button:hover { filter: brightness(1.2); }
+    
+    #resultado-valor { 
+      margin-top: 20px; 
+      padding: 20px; 
+      background: rgba(92, 200, 255, 0.1); 
+      border-radius: 6px; 
+      display: none; 
+    }
+
+    footer { text-align: center; padding: 40px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad:true, theme: 'dark' });</script>
 </head>
 <body>
+
   <header>
-    <div class="title">Earth Commons DAO — Sur DAO</div>
+    <div class="title">SUR DAO / CAPA DE SOMBRA</div>
     <nav>
-      <a href="#descripcion">Descripción</a>
       <a href="#kpis">Dashboard SIES</a>
-      <a href="#calculadora">Calculadora Valor</a>
-      <a href="#diagrama">Gobernanza</a>
+      <a href="#calculadora">Valor Social</a>
+      <a href="https://github.com/tianhh77/-earth-commons-dao" target="_blank">GitHub</a>
     </nav>
   </header>
 
   <main>
     <section id="descripcion">
-      <h2>Descripción</h2>
-      <p>
-        Este portal documenta la <strong>Capa de Sombra</strong>: los flujos de capital humano, saberes y reciprocidad que el sistema institucional ignora. 
-        Transformamos la deserción en trayectorias acompañadas mediante tecnología DAO.
-      </p>
-      <span class="tag">Institucional</span><span class="tag">Gobernanza Descentralizada</span><span class="tag">Justicia de Datos</span>
+      <h2>La Venganza de los Datos</h2>
+      <p>Este portal utiliza los registros del SIES para visibilizar lo que la USACH prefiere ignorar: el inmenso capital humano que queda en la "sombra" tras la deserción sistémica.</p>
     </section>
 
     <section id="kpis">
-      <h2>📊 Dashboard: Datos de la Sombra (SIES 2025)</h2>
-      <p>Indicadores reales extraídos del Servicio de Información de Educación Superior para la USACH.</p>
-      <div class="kpi-box">
-        <ul id="lista-kpis" style="list-style: none; padding: 0;">
-          <li>Cargando métricas de la sombra...</li>
-        </ul>
+      <h2>📊 Auditoría USACH (SIES 2025)</h2>
+      <div id="loading">Cargando datos institucionales...</div>
+      <div class="kpi-grid" id="dashboard-grid" style="display:none;">
+        <div class="kpi-card">
+          <span class="kpi-label">Deserción 1er Año</span>
+          <span class="kpi-value" id="val-desercion" style="color:#ff5c5c">--</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Capital en Riesgo</span>
+          <span class="kpi-value" id="val-capital">--</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Nodos en Sombra</span>
+          <span class="kpi-value" id="val-nodos">--</span>
+        </div>
       </div>
     </section>
 
     <section id="calculadora">
-      <h2>⚖️ Calculadora de Capital Humano</h2>
-      <p>El sistema te cobra una deuda; nosotros medimos tu valor real generado por saberes y tiempo invertido.</p>
-      <div class="calc-container">
-        <label>Años en educación tradicional: <input type="number" id="anos-trad" value="4"></label>
-        <label>Saberes autónomos (Nivel 1-10): <input type="range" id="saberes" min="1" max="10" value="7"></label>
-        <button onclick="calcularValor()">DEVELAR MI VALOR</button>
-        <div id="resultado-valor" style="margin-top:10px; font-size: 1.1em;"></div>
-      </div>
-    </section>
+      <h2>⚖️ Develador de Valor Real</h2>
+      <p>El sistema te llama "deudor". Nosotros calculamos tu aporte real al mundo basado en tus saberes y tiempo.</p>
+      
+      <div class="calc-box">
+        <div class="input-group">
+          <label>Años de inversión en el sistema:</label>
+          <input type="number" id="anos" value="4" min="0">
+        </div>
+        <div class="input-group">
+          <label>Nivel de Saberes Autónomos (1-10):</label>
+          <input type="range" id="saberes" min="1" max="10" value="7" oninput="valSaberes.innerText = this.value">
+          <span id="valSaberes" style="color:var(--accent)">7</span>
+        </div>
+        <button onclick="calcular()">DEVELAR MI CAPITAL</button>
 
-    <section id="diagrama">
-      <h2>Diagrama de Flujo: Espiral DAO</h2>
-      <div class="mermaid">
-        graph TD
-            A[Deserción / Sombra] -->|Visibilización| B(Sur DAO)
-            B -->|Match de Saberes| C[Convalidación Automática]
-            B -->|Tokenización| D[Capital Humano Recuperado]
-            C --> E[Salida de Babel]
-            D --> E
+        <div id="resultado-valor">
+          <h3 style="margin-top:0; color:var(--success)">¡Capital Identificado!</h3>
+          <p id="texto-resultado"></p>
+        </div>
       </div>
-    </section>
-
-    <section id="manifiestos">
-      <h2>Documentación Maestra</h2>
-      <ul>
-        <li><a class="doc" href="manifiestos/Manifiesto-Parte-2.md">Trayectorias acompañadas (MD)</a></li>
-        <li><a class="doc" href="manifiestos/Roadmap-Tecnico.md">Roadmap de la Espiral (MD)</a></li>
-      </ul>
     </section>
   </main>
 
   <footer>
-    <p>© Earth Commons DAO — Prototipo 2026. Basado en datos reales del SIES.</p>
+    © 2026 Sur DAO — Publicado mediante cuenta institucional USACH vinculada. 
   </footer>
 
   <script>
-    // 1. CARGA DE DATOS DESDE EL JSON
+    // CARGAR DATOS
     fetch('./data_sur.json')
       .then(res => res.json())
       .then(data => {
-        document.getElementById('lista-kpis').innerHTML = `
-          <li>Institución: <strong>${data.institucion}</strong></li>
-          <li>Tasa Deserción 1er Año: <strong style="color:#ff5c5c">${data.metricas.desercion_primer_ano}%</strong></li>
-          <li>Capital Social en Riesgo: <strong>${data.metricas.capital_social_riesgo}</strong></li>
-          <li>Nodos en Sombra: <strong>${data.metricas.estudiantes_en_sombra}</strong></li>
-        `;
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('dashboard-grid').style.display = 'flex';
+        document.getElementById('val-desercion').innerText = data.metricas.desercion_primer_ano + '%';
+        document.getElementById('val-capital').innerText = data.metricas.capital_social_riesgo;
+        document.getElementById('val-nodos').innerText = data.metricas.estudiantes_en_sombra;
       })
       .catch(e => {
-        document.getElementById('lista-kpis').innerHTML = "<li>Error: Sube el archivo 'data_sur.json' a tu repo.</li>";
+        document.getElementById('loading').innerText = "Error: Verifica que data_sur.json esté en el repo.";
       });
 
-    // 2. LÓGICA DE LA CALCULADORA
-    function calcularValor() {
-      const anos = document.getElementById('anos-trad').value;
+    // LÓGICA CALCULADORA
+    function calcular() {
+      const anos = document.getElementById('anos').value;
       const saberes = document.getElementById('saberes').value;
-      
-      // Valorización simbólica: $4.5M por año de vida + $1.5M por nivel de saber
-      const valorTotal = (anos * 4500000) + (saberes * 1500000);
-      const deudaFiccion = 2500000;
-      const excedente = valorTotal - deudaFiccion;
-
-      document.getElementById('resultado-valor').innerHTML = `
-        Tu Capital de Saberes: <span style="color:var(--accent)">$${valorTotal.toLocaleString()} CLP</span><br>
-        <small>Después de cubrir tu deuda, le aportas al mundo un excedente de $${excedente.toLocaleString()}.</small>
-      `;
-    }
-  </script>
-</body>
-</html>
