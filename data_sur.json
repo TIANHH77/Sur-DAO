@@ -1,0 +1,9 @@
+{
+    "institucion": "Universidad de Santiago de Chile",
+    "metricas": {
+        "desercion_primer_ano": 35.27,
+        "capital_social_riesgo": "22.6M (Estimado)",
+        "estudiantes_en_sombra": 33
+    },
+    "contexto": "Datos extraídos de SIES 2025 - Procesado por Sur DAO"
+}
