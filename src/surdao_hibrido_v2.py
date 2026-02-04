@@ -1,34 +1,86 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 
-def surdao_hibrido(csv_sies="data/Oferta_Academica_2025_SIES.csv", años_min=3):
-    # 1. Cargar base nacional
-    df = pd.read_csv(csv_sies, encoding='latin1', errors='ignore')
-    
-    # Normalizar columnas (según nombres reales del SIES)
-    df['Vacantes_S1'] = pd.to_numeric(df.get('Vacantes Semestre Uno', df.get('Vacantes S1')), errors='coerce')
-    df['Sem_rec'] = pd.to_numeric(df.get('Semestres reconocidos', df.get('Sem_Rec_SCT')), errors='coerce')
+# Configuración de página épica
+st.set_page_config(page_title="SurDAO Híbrido v2", layout="wide")
 
-    # 2. Filtrar carreras viables
-    general = df[(df['Vacantes_S1'] > 50) & (df['Sem_rec'] >= 6)]
+st.title("🏹 SurDAO: Motor de Inteligencia Académica")
+st.markdown("---")
 
-    # 3. Calcular años, créditos y valor humano
+def cargar_y_procesar(años_min):
+    # Cargar base con manejo de errores
+    try:
+        df = pd.read_csv("data/Oferta_Academica_2025_SIES.csv", encoding='latin1', errors='ignore')
+    except:
+        st.error("¡No encontré el CSV! Revisa la carpeta /data.")
+        return None
+
+    # Normalización inteligente de columnas
+    col_map = {
+        'Vacantes Semestre Uno': 'Vacantes_S1',
+        'Vacantes S1': 'Vacantes_S1',
+        'Semestres reconocidos': 'Sem_rec',
+        'Sem_Rec_SCT': 'Sem_rec'
+    }
+    df = df.rename(columns=col_map)
+
+    # Asegurar que existan o crear dummy si fallan
+    if 'Vacantes_S1' not in df.columns: df['Vacantes_S1'] = 0
+    if 'Sem_rec' not in df.columns: df['Sem_rec'] = 0
+
+    df['Vacantes_S1'] = pd.to_numeric(df['Vacantes_S1'], errors='coerce').fillna(0)
+    df['Sem_rec'] = pd.to_numeric(df['Sem_rec'], errors='coerce').fillna(0)
+
+    # 1. Filtrar carreras viables (Lógica SurDAO)
+    general = df[(df['Vacantes_S1'] > 50) & (df['Sem_rec'] >= 6)].copy()
+
+    # 2. Cálculos de Valor
     general['Años_Est'] = np.clip(general['Sem_rec']/2, 3, 7)
     general['Creditos'] = general['Años_Est'] * 40
     general['Valor_Humano'] = general['Creditos'] * 12000
 
-    # 4. Foco USACH
+    # 3. Foco USACH
     usach_mask = general['Nombre IES'].str.contains('SANTIAGO|USACH', case=False, na=False)
     usach_prior = general[usach_mask & (general['Años_Est'] >= años_min)]
 
-    # 5. Export top 50
-    top_hibrido = usach_prior.nlargest(50, 'Valor_Humano')
-    top_hibrido.to_csv('data/surdao_hibrido_usach_v2.csv', index=False)
+    return general, usach_prior
 
-    return {
-        'general_carreras': len(general),
-        'usach_prior_3mas': len(usach_prior),
-        'top_50': top_hibrido,
-        'capital_recuperable_mm': top_hibrido['Valor_Humano'].sum() / 1e6
-    }
+# Sidebar para controles
+st.sidebar.header("Parámetros de Simulación")
+años_input = st.sidebar.slider("Años mínimos de carrera", 3, 7, 3)
+
+data_gen, data_usach = cargar_y_procesar(años_input)
+
+if data_gen is not None:
+    # Métricas clave arriba
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Carreras Viables", len(data_gen))
+    with col2:
+        st.metric("Prioridad USACH", len(data_usach))
+    with col3:
+        capital_mm = (data_usach['Valor_Humano'].sum() / 1e6)
+        st.metric("Capital Recuperable", f"${capital_mm:,.1f} MM")
+
+    # Gráfico de dispersión: Vacantes vs Valor Humano
+    st.subheader("Visualización de Potencial Académico")
+    fig = px.scatter(data_usach, 
+                     x="Vacantes_S1", 
+                     y="Valor_Humano", 
+                     size="Años_Est", 
+                     color="Nombre Carrera",
+                     hover_name="Nombre Carrera",
+                     title="Relación Vacantes vs Capital Humano")
+    st.plotly_chart(fig, use_container_width=True)
+
+    # Tabla interactiva
+    st.subheader("Top 50 Nodos USACH")
+    st.dataframe(data_usach.nlargest(50, 'Valor_Humano')[['Nombre Carrera', 'Años_Est', 'Valor_Humano']])
+
+    # Exportar resultados
+    st.download_button("Descargar Reporte CSV", 
+                       data_usach.to_csv(index=False), 
+                       "surdao_report.csv", "text/csv")
 
