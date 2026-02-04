@@ -148,5 +148,22 @@
       <img src="https://img.shields.io/badge/Custodia%20Ética-Activa-green" />
     </p>
   </footer>
+  <script>
+  // Este código busca los datos y los pone en los cuadritos de tu Dashboard
+  fetch('./data_sur.json')
+    .then(response => response.json())
+    .then(data => {
+      // Aquí actualizamos los números que ve la gente
+      const lista = document.querySelector('#kpis ul');
+      if(lista) {
+        lista.innerHTML = `
+          <li>Deserción 1er Año (USACH): <strong>${data.metricas.desercion_primer_ano}%</strong></li>
+          <li>Estudiantes en la Sombra: <strong>${data.metricas.estudiantes_en_sombra}</strong></li>
+          <li>Capital Humano en Riesgo: <strong>${data.metricas.capital_social_riesgo}</strong></li>
+        `;
+      }
+    })
+    .catch(err => console.log("Aún no subes el archivo data_sur.json"));
+</script>
 </body>
 </html>
