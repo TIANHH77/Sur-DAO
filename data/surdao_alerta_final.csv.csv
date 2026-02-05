@@ -1,0 +1,4 @@
+"ID","Carrera","Riesgo","Beca","Apoyo Par","Centro","Alerta Final"
+"1","Arquitectura","Medio","Inactivo","No","Inactivo","🔴 Riesgo crítico"
+"2","Derecho","Medio","Inactivo","Sí","Activo","🟠 Riesgo con red parcial"
+"4","Derecho","Alto","Inactivo","Sí","Inactivo","🟠 Riesgo con red parcial"
