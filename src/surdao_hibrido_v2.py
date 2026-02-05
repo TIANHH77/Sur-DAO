@@ -35,23 +35,34 @@ if df_to is not None:
     st.title("👐 **SurDAO: Terapia Ocupacional**")
     st.info("Auditoría Académica Nodo Santiago - Criterio SIES 2025")
 
-    # KPIs automáticos
+    # 1. Definimos las columnas para los KPIs
     c1, c2, c3 = st.columns(3)
-    c1.metric("Acreditación USACH", "7 Años", "Máximo SIES")
     
-    # Buscamos deserción sin importar el nombre de la columna
-    col_d = [c for c in df_to.columns if "Deser" in str(c)][0]
-    media_d = pd.to_numeric(df_to[col_d], errors='coerce').mean()
-    c2.metric("Deserción Promedio", f"{media_d:.1f}%")
+    # 2. KPI 1: Acreditación (Fijo)
+    c1.metric("Acreditación USACH", "7 Años", "Máximo SIES")
+
+    # 3. KPI 2: DESERCIÓN BLINDADO (Aquí ya no hay error)
+    try:
+        cols_posibles = [c for c in df_to.columns if any(p in str(c) for p in ["Deser", "Reten", "d"])]
+        
+        if cols_posibles:
+            col_d = cols_posibles[0]
+            media_d = pd.to_numeric(df_to[col_d], errors='coerce').mean()
+            c2.metric("Deserción Promedio", f"{media_d:.1f}%", f"Ref: {col_d}")
+        else:
+            c2.metric("Deserción", "No encontrada")
+            st.warning(f"🕵️ Radar: No hallé 'Deser'. Columnas: {list(df_to.columns[:5])}")
+    except Exception as e:
+        c2.metric("Deserción", "Error", f"{e}")
+    
+    # 4. KPI 3: Empleabilidad
     c3.metric("Empleabilidad", "88.9%", "USACH")
 
-    # Tabla de Matches
+    # --- EL RESTO SIGUE IGUAL ---
     st.subheader("🎯 Comparativa: USACH vs Central")
     st.dataframe(df_story, use_container_width=True)
 
-    # Gráfico de Evolución
     st.subheader("📈 Crecimiento Histórico de Titulados")
-    # Buscamos la fila de Terapia Ocupacional
     row = df_evo[df_evo.iloc[:,0].astype(str).str.contains("Terapia Ocupacional", na=False, case=False)]
     
     if not row.empty:
@@ -60,4 +71,4 @@ if df_to is not None:
         fig = px.area(x=anios, y=valores, title="Titulados por Año (SIES)", color_discrete_sequence=['#FF4B4B'])
         st.plotly_chart(fig, use_container_width=True)
 
-    st.success("🚀 Hangar v9.0 Operativo")
+    st.success("🚀 Hangar v9.1 Operativo")
