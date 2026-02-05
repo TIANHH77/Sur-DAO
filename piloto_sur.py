@@ -4,33 +4,32 @@ import plotly.express as px
 import json
 import os
 
-# --- 1. CONFIGURACIÓN INICIAL ---
+# --- 1. CONFIGURACIÓN DEL HANGAR ---
 st.set_page_config(page_title="SUR DAO - Piloto", layout="wide", page_icon="🌑")
 st.title("🌑 SUR DAO - Custodia de Trayectorias USACH")
 
-# --- 2. CARGA DE DATOS REALES ---
+# --- 2. CARGA DE DATOS ---
 @st.cache_data
 def load_data():
     try:
-        # Cargamos el archivo principal de alertas y riesgo
+        # Cargamos el radar de alertas
         df = pd.read_csv("data/surdao_alerta_final.csv")
-        # Cargamos el stock histórico para el KPI de los 504k
-        df_stock = pd.read_csv("data/surdao_stock_historico.csv")
-        return df, df_stock
+        return df
     except Exception as e:
-        st.error(f"⚠️ Error al cargar archivos en /data: {e}")
-        return pd.DataFrame(), pd.DataFrame()
+        st.error(f"⚠️ Error: No se encuentran los CSV en /data. {e}")
+        return pd.DataFrame()
 
-df, df_stock = load_data()
+df = load_data()
 
-# --- 3. PROCESAMIENTO PARA LA MIXTURA (JSON) ---
+# --- 3. PROCESAMIENTO Y MIXTURA (JSON) ---
 if not df.empty:
-    # Calculamos métricas reales para el index.html
+    # Identificamos nodos críticos para el portal
     nodos_criticos = len(df[df['Alerta Final'].str.contains('🔴', na=False)])
     
+    # Preparamos el ADN para el index.html
     data_sur = {
         "metricas": {
-            "desercion_primer_ano": 35.27, # Dato SIES 2025
+            "desercion_primer_ano": 35.27,
             "capital_social_riesgo": "22.6M (Estimado)",
             "estudiantes_en_sombra": nodos_criticos,
             "sobreduracion_promedio": "4.7 semestres"
@@ -38,87 +37,63 @@ if not df.empty:
         "contexto": "Sincronización Piloto SUR - USACH 2026"
     }
 
-    # Creamos el puente con el portal web
+    # Creamos el puente de datos
     with open('data_sur.json', 'w') as f:
         json.dump(data_sur, f, indent=4)
 
-# --- 4. DASHBOARD: KPIs ---
+# --- 4. DASHBOARD: KPIs MAESTROS ---
 if not df.empty:
     col1, col2, col3 = st.columns(3)
     col1.metric("Nodos en Análisis", df.shape[0])
-    # Simulamos capital recuperable basado en el pool de skills si no existe la columna
-    capital_total = 22.6 
-    col2.metric("Nodos en Riesgo Crítico 🔴", nodos_criticos)
-    col3.metric("Capital en Riesgo ($MM)", f"{capital_total}M")
+    col2.metric("Alerta Crítica 🔴", nodos_criticos)
+    col3.metric("Brecha Sombra", "4.7 Semestres")
 
-    # --- 5. VISUALIZACIONES (Lo que te gusta) ---
+    # --- 5. VISUALIZACIONES (El poder del dato) ---
     
-    # Tabla Maestra
-    st.subheader("📄 Radar de Alertas SIES")
-    st.dataframe(df, width=None) # Ajustado para evitar el warning de 2025
-
     # Gráfico de Barras: Riesgo por Carrera
-    st.subheader("📊 Nivel de Riesgo por Carrera")
+    st.subheader("📊 Distribución de Riesgo por Carrera")
     fig_bar = px.bar(
         df,
         x="Carrera",
         y="Riesgo",
         color="Alerta Final",
-        title="Distribución de Alertas en el Nodo",
-        color_discrete_map={'🔴 Riesgo crítico': 'red', '🟠 Riesgo con red parcial': 'orange'}
+        title="Impacto del SIES por Unidad Académica",
+        color_discrete_map={'🔴 Riesgo crítico': 'red', '🟠 Riesgo con red parcial': 'orange'},
+        width=None # Nueva sintaxis para evitar warnings
     )
     st.plotly_chart(fig_bar, width='stretch')
 
-    # Scatter: Apoyo Par vs Riesgo
-    st.subheader("🎯 Efectividad del Apoyo de Pares")
-    fig_scatter = px.scatter(
-        df,
-        x="Carrera",
-        y="Riesgo",
-        size="ID", # O cualquier métrica numérica
-        color="Apoyo Par",
-        hover_name="Alerta Final",
-        title="Relación Carrera, Riesgo y Apoyo"
+    # Gráfico de la Brecha (El Abismo)
+    st.subheader("⏳ El Abismo de la Sobreduración")
+    df_dur = pd.DataFrame({
+        'Estado': ['Promesa (Acreditación)', 'Realidad (Capa Sombra)'],
+        'Semestres': [10, 14.7]
+    })
+    fig_dur = px.bar(
+        df_dur, x='Estado', y='Semestres', color='Estado',
+        text='Semestres', title="4.7 Semestres de Capital Humano No Reconocido",
+        color_discrete_map={'Promesa (Acreditación)': '#4A90E2', 'Realidad (Capa Sombra)': '#E94E77'}
     )
-    st.plotly_chart(fig_scatter, width='stretch')
+    st.plotly_chart(fig_dur, width='stretch')
 
-# --- 6. ACCESO AL PORTAL (Tu idea del botón) ---
+# --- 6. BARRA LATERAL Y BOTÓN DE SALIDA ---
 st.sidebar.markdown("---")
+st.sidebar.subheader("🚀 Salida al Exterior")
 st.sidebar.success("✅ Portal Web Sincronizado")
-# Cambia esta URL por la de tu Live Server o GitHub Pages
-st.sidebar.link_button("🌐 IR AL PORTAL PÚBLICO", "http://localhost:5500/index.html")
 
-# Botón de descarga de los datos procesados
+# AQUÍ ESTÁ EL BOTÓN MAESTRO
+st.sidebar.link_button(
+    "🌐 IR AL PORTAL PÚBLICO", 
+    "http://74.249.85.193:8502" # Tu IP actual
+)
+
+st.sidebar.info("""
+    Este dashboard procesa la 'Capa Sombra' de la USACH. 
+    Al presionar el botón, verás cómo estos datos se 
+    convierten en valor real en tu index.html.
+""")
+
+# Descarga de seguridad
 if not df.empty:
     csv = df.to_csv(index=False).encode('utf-8')
-    st.sidebar.download_button(
-        label="📥 Descargar Reporte Piloto",
-        data=csv,
-        file_name='reporte_piloto_sur.csv',
-        mime='text/csv',
-    )
-# --- 7. GRÁFICO DE SOBREDURACIÓN (El Abismo) ---
-st.subheader("⏳ El Abismo de la Sobreduración")
-datos_duracion = {
-    'Estado': ['Promesa Institucional', 'Realidad Estudiantil'],
-    'Semestres': [10, 14.7], # 10 normales + 4.7 de 'sombra'
-    'Color': ['#4A90E2', '#E94E77'] # Azul vs Rojo Sombra
-}
-df_dur = pd.DataFrame(datos_duracion)
-
-fig_dur = px.bar(
-    df_dur, 
-    x='Estado', 
-    y='Semestres', 
-    color='Estado',
-    text='Semestres',
-    title="La Brecha: 4.7 Semestres de Capital Sombra",
-    color_discrete_map={'Promesa Institucional': '#4A90E2', 'Realidad Estudiantil': '#E94E77'}
-)
-st.plotly_chart(fig_dur, width='stretch')
-
-st.info("""
-    **💡 Insight del Hangar:** Esos 4.7 semestres adicionales no son 'repitencia', 
-    es el tiempo donde el estudiante desarrolla saberes no acreditados 
-    que el SUR DAO busca rescatar y valorizar.
-""")
+    st.sidebar.download_button("📥 Bajar Reporte SIES", csv, "piloto_sur_report.csv", "text/csv")
