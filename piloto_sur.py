@@ -97,3 +97,28 @@ if not df.empty:
         file_name='reporte_piloto_sur.csv',
         mime='text/csv',
     )
+# --- 7. GRÁFICO DE SOBREDURACIÓN (El Abismo) ---
+st.subheader("⏳ El Abismo de la Sobreduración")
+datos_duracion = {
+    'Estado': ['Promesa Institucional', 'Realidad Estudiantil'],
+    'Semestres': [10, 14.7], # 10 normales + 4.7 de 'sombra'
+    'Color': ['#4A90E2', '#E94E77'] # Azul vs Rojo Sombra
+}
+df_dur = pd.DataFrame(datos_duracion)
+
+fig_dur = px.bar(
+    df_dur, 
+    x='Estado', 
+    y='Semestres', 
+    color='Estado',
+    text='Semestres',
+    title="La Brecha: 4.7 Semestres de Capital Sombra",
+    color_discrete_map={'Promesa Institucional': '#4A90E2', 'Realidad Estudiantil': '#E94E77'}
+)
+st.plotly_chart(fig_dur, width='stretch')
+
+st.info("""
+    **💡 Insight del Hangar:** Esos 4.7 semestres adicionales no son 'repitencia', 
+    es el tiempo donde el estudiante desarrolla saberes no acreditados 
+    que el SUR DAO busca rescatar y valorizar.
+""")
