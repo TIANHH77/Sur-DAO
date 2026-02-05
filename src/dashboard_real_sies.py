@@ -1,103 +1,91 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import unicodedata
+import json
+import os
 
-# --- Configuración inicial ---
-st.set_page_config(page_title="SUR DAO Dashboard", layout="wide")
-st.title("🌑 SUR DAO - Capa Sombra Dashboard")
-
-# --- Cargar datos ---
-@st.cache_data
-def load_data():
-    df = pd.read_csv("data/surdao_real_matches_2025.csv")
-    # Renombrar columna clave para simplificar
-    if "Carrera_SURDAO" in df.columns:
-        df.rename(columns={"Carrera_SURDAO": "carrera"}, inplace=True)
-    # Añadir columna de empleabilidad si falta
-    if "Empleabilidad_%" not in df.columns:
-        df["Empleabilidad_%"] = 85.0
+# --- 1. NORMALIZACIÓN ---
+def normalize_columns(df):
+    def clean(col):
+        col = col.strip().lower()
+        col = unicodedata.normalize('NFKD', col).encode('ascii', errors='ignore').decode('utf-8')
+        return col
+    df.columns = [clean(c) for c in df.columns]
     return df
 
-df = load_data()
+# --- 2. CONFIGURACIÓN ---
+st.set_page_config(page_title="SUR DAO - Capa Sombra", layout="wide", page_icon="🌑")
+st.title("🌑 SUR DAO - Capa Sombra")
 
-# --- Definir pestañas ---
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["📊 KPIs", "📄 Tabla", "📊 Barras", "📈 Scatter", "🔵 Bubble Chart"]
-)
+# --- 3. CARGA Y MERGE DE LOS 3 ARCHIVOS ---
+@st.cache_data
+def load_sur_data():
+    try:
+        # 1. El Pool de Skills y Valor Sombra
+        df_pool = pd.read_csv("data/surdao_pool_skills.csv")
+        # 2. El Radar de Alerta (Riesgo y Becas)
+        df_alerta = pd.read_csv("data/surdao_alerta_final.csv")
+        # 3. El Stock Histórico (Los 500k)
+        df_stock = pd.read_csv("data/surdao_stock_historico.csv")
+        
+        # Limpiamos nombres para el merge
+        df_pool = normalize_columns(df_pool)
+        df_alerta = normalize_columns(df_alerta)
+        
+        return df_pool, df_alerta, df_stock
+    except Exception as e:
+        st.error(f"Faltan archivos en /data: {e}")
+        return pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
 
-# --- KPIs ---
+df_pool, df_alerta, df_stock = load_sur_data()
+
+# --- 4. SINCRONIZACIÓN CON EL PORTAL (JSON) ---
+if not df_alerta.empty:
+    # Calculamos métricas para el index.html
+    alertas_rojas = len(df_alerta[df_alerta['alerta final'].str.contains('🔴', na=False)])
+    becas_inactivas = len(df_alerta[df_alerta['beca'] == 'Inactivo'])
+    
+    data_sur = {
+        "metricas": {
+            "estudiantes_riesgo_alto": alertas_rojas,
+            "becas_inactivas": becas_inactivas,
+            "stock_sombra": "504,000"
+        }
+    }
+    with open('data_sur.json', 'w') as f:
+        json.dump(data_sur, f, indent=4)
+    st.sidebar.success("✅ Portal index.html Sincronizado")
+
+# --- 5. VISUALIZACIÓN ---
+tab1, tab2, tab3 = st.tabs(["📊 Radar de Riesgo", "🌑 Capa de Sombra", "📜 Normativa"])
+
 with tab1:
-    st.subheader("📊 Indicadores principales")
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Total carreras SURDAO", df.shape[0])
-    col2.metric("Créditos acumulados", int(df["Creditos_Acum"].sum()))
-    col3.metric("Capital recuperable ($MM)", round(df["Capital_Recuperable"].sum(), 2))
+    st.subheader("Estado de Trayectorias (USACH)")
+    st.dataframe(df_alerta, use_container_width=True)
+    
+    if 'riesgo' in df_alerta.columns:
+        fig = px.pie(df_alerta, names='riesgo', title="Distribución de Riesgo en el Nodo")
+        st.plotly_chart(fig)
 
-# --- Tabla ---
 with tab2:
-    st.subheader("📄 Tabla de Matches SURDAO-SIES")
-    st.dataframe(df, use_container_width=True)
+    st.subheader("Pool de Valor y Skills Perdidos")
+    st.table(df_pool)
+    st.info("Este capital circula en la sombra mientras el sistema oficial lo ignora.")
 
-# --- Barras ---
 with tab3:
-    st.subheader("📊 Impacto Económico por Carrera")
-    fig_bar = px.bar(
-        df,
-        x="carrera",
-        y="Capital_Recuperable",
-        color="Universidad",
-        text="Capital_Recuperable",
-        labels={
-            "carrera": "Carrera",
-            "Capital_Recuperable": "Capital Recuperable ($MM)"
-        },
-        title="Capital humano recuperable por carrera"
-    )
-    fig_bar.update_traces(texttemplate='%{text:.2f}', textposition='outside')
-    st.plotly_chart(fig_bar, use_container_width=True)
+    st.subheader("Respaldo Legal")
+    st.markdown("""
+    **Resolución Exenta 008417 (USACH)**
+    - *Art. 1:* La formación integral busca el bienestar del estudiante.
+    - *Art. 6:* Reconocimiento de competencias transversales mediante créditos SCT.
+    - *Situación:* El SUR DAO opera donde la institución deja de acompañar.
+    """)
 
-# --- Scatter ---
-with tab4:
-    st.subheader("📈 Deserción vs Capital Recuperable")
-    fig_scatter = px.scatter(
-        df,
-        x="Desercion_SIES_pct",
-        y="Capital_Recuperable",
-        color="Universidad",
-        size="Creditos_Acum",
-        hover_name="carrera",
-        labels={
-            "Desercion_SIES_pct": "Tasa de Deserción (%)",
-            "Capital_Recuperable": "Capital Recuperable ($MM)"
-        },
-        title="Relación entre deserción y capital recuperable"
-    )
-    st.plotly_chart(fig_scatter, use_container_width=True)
-
-# --- Bubble Chart ---
-with tab5:
-    st.subheader("🔵 Deserción vs Empleabilidad vs Capital Recuperable")
-    fig_bubble = px.scatter(
-        df,
-        x="Desercion_SIES_pct",
-        y="Empleabilidad_%",
-        size="Capital_Recuperable",
-        color="Universidad",
-        hover_name="carrera",
-        labels={
-            "Desercion_SIES_pct": "Tasa de Deserción (%)",
-            "Empleabilidad_%": "Empleabilidad (%)",
-            "Capital_Recuperable": "Capital Recuperable ($MM)"
-        },
-        title="Deserción vs Empleabilidad vs Capital Recuperable"
-    )
-    fig_bubble.update_traces(marker=dict(opacity=0.7, line=dict(width=1, color='DarkSlateGrey')))
-    fig_bubble.update_layout(
-        xaxis_title="Tasa de Deserción (%)",
-        yaxis_title="Empleabilidad (%)",
-        legend_title="Universidad"
-    )
-    st.plotly_chart(fig_bubble, use_container_width=True)
+# Botón de "Ancla" sugerido para no perderse
+st.sidebar.markdown("---")
+if st.sidebar.button("↓ Ir al Final (Nuevos Datos)"):
+    st.markdown('<div id="final"></div>', unsafe_allow_html=True)
 
 
 
