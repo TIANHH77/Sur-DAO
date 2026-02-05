@@ -2,74 +2,52 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# Configuración Galáctica
-st.set_page_config(layout="wide", page_title="SurDAO: Piloto Híbrido v400", page_icon="🦎")
+st.set_page_config(layout="wide", page_title="SurDAO v8.1")
 
-# --- CARGA DE DATOS ---
 @st.cache_data
 def load_data():
-    # 1. El "Gran Hangar" (Todas las Ues)
-    headers_nacional = ['Universidad', 'Acreditacion', 'Carrera', 'Desercion_1erAño', 
-                       'Empleabilidad_1erAño', 'Duracion_Real', 'Filtro_Extra', 'Retencion_1erAño', 'Salario_Rango']
-    df_nacional = pd.read_csv("Terapia_ocupacional.xlsx - Hoja1.csv", names=headers_nacional)
+    # 1. Tabla Nacional (La que tiene el nombre largo con "Hoja1")
+    # Nota: Agregamos headers manuales porque este CSV no los trae en la primera fila
+    headers_to = ['Universidad', 'Acreditacion', 'Carrera', 'Desercion_1erAño', 
+                  'Empleabilidad_1erAño', 'Duracion_Real', 'Filtro_Extra', 'Retencion_1erAño', 'Salario_Rango']
+    df_to = pd.read_csv("data/Terapia_ocupacional.xlsx - Hoja1.csv", names=headers_to)
     
-    # 2. El "Match Ejecutivo" (USACH vs Central)
-    df_match = pd.read_csv("TO_USACH_CENTRAL.xlsx - Hoja1.csv")
+    # 2. Match Ejecutivo (USACH vs Central)
+    df_story = pd.read_csv("data/TO_USACH_CENTRAL.xlsx - Hoja1.csv")
     
-    # 3. Evolución SIES (Nacional)
-    df_evo = pd.read_csv("Informe_Titulacion_2024_SIES_.xlsx - Evolución Titulación Pregrado.csv", skiprows=4)
+    # 3. Evolución SIES (El reporte oficial del Mineduc)
+    df_evo = pd.read_csv("data/Informe_Titulacion_2024_SIES_.xlsx - Evolución Titulación Pregrado.csv", skiprows=4)
     
-    return df_nacional, df_match, df_evo
+    return df_to, df_story, df_evo
 
-df_nacional, df_match, df_evo = load_data()
+# --- EJECUCIÓN DEL DASHBOARD ---
+try:
+    df_to, df_story, df_evo = load_data()
 
-# --- HEADER NARRATIVO ---
-st.title("👐 **SurDAO: Nodo Terapia Ocupacional**")
-st.markdown("## *“De literal 0 al Despliegue Híbrido: USACH vs El Mercado”*")
-st.markdown("---")
+    st.title("👐 **SurDAO Terapia Ocupacional**")
+    st.markdown("### *Criterio SIES 2024 - Nodo Santiago Tian77*")
 
-# --- SECCIÓN 1: EL MATCH DEFINITIVO ---
-st.subheader("🎯 La Trayectoria Haroldo: Análisis Ejecutivo")
-col_match, col_text = st.columns([2, 1])
+    # KPIs
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Acreditación USACH", "7 Años", "Máximo Nivel")
+    c2.metric("Deserción Nacional Promedio", f"{df_to['Desercion_1erAño'].mean():.1f}%")
+    c3.metric("Empleabilidad 1er Año", "88.9%", "USACH")
 
-with col_match:
-    # Mostramos la tabla de comparación directa que preparaste
-    st.table(df_match)
+    # Visualización de tu historia
+    st.subheader("🎯 Comparativa Crítica: USACH vs Central")
+    st.dataframe(df_story, use_container_width=True)
 
-with col_text:
-    st.info("""
-    **Análisis de la Custodia:**
-    - **Eficiencia:** La USACH reduce la duración real en **0.8 semestres** frente a la Central.
-    - **Blindaje:** El **80% de retención** de la USACH es el motor de este proyecto.
-    - **El Valor del 1%:** Este dashboard es el insumo para validar el retorno de la inversión académica.
-    """)
+    # Gráfico de Evolución SIES
+    st.subheader("📈 Evolución Histórica Titulados")
+    # Extraemos los datos de la fila de TO del SIES
+    row_to = df_evo[df_evo.iloc[:,0].str.contains("Terapia Ocupacional", na=False, case=False)]
+    if not row_to.empty:
+        anios = [str(i) for i in range(2007, 2025)]
+        valores = row_to.iloc[0, 1:19].values
+        fig = px.line(x=anios, y=valores, title="Crecimiento Nacional de la Carrera", markers=True)
+        st.plotly_chart(fig, use_container_width=True)
 
-# --- SECCIÓN 2: KPIs NACIONALES (El Poder del Gran Hangar) ---
-st.subheader("📊 El Contexto Nacional (Data SIES 2024)")
+    st.success("🚀 **Hangar Operativo:** Datos cargados respetando archivos originales.")
 
-# Buscamos los datos específicos de la USACH en el archivo grande
-usach_data = df_nacional[df_nacional['Universidad'].str.contains("SANTIAGO", na=False)].iloc[0]
-promedio_desercion = df_nacional['Desercion_1erAño'].mean()
-
-c1, c2, c3 = st.columns(3)
-c1.metric("Deserción USACH", f"{usach_data['Desercion_1erAño']*100}%", f"vs {promedio_desercion*100:.1f}% Promedio Nacional", delta_color="inverse")
-c2.metric("Acreditación USACH", "7 Años", "Excelencia Máxima")
-c3.metric("Empleabilidad USACH", f"{usach_data['Empleabilidad_1erAño']*100}%", "Estabilidad de Nodo")
-
-# --- SECCIÓN 3: EVOLUCIÓN HISTÓRICA ---
-st.subheader("📈 Crecimiento de la Ocupación Humana (2007-2024)")
-row_to = df_evo[df_evo.iloc[:,0].str.contains("Terapia Ocupacional", na=False, case=False)]
-
-if not row_to.empty:
-    anios = [str(i) for i in range(2007, 2025)]
-    valores = row_to.iloc[0, 1:19].values
-    fig = px.area(x=anios, y=valores, 
-                  labels={'x':'Año', 'y':'Titulados'},
-                  title="Titulados de Terapia Ocupacional en Chile")
-    fig.update_traces(line_color='#00CC96')
-    st.plotly_chart(fig, use_container_width=True)
-
-# --- FOOTER ---
-st.markdown("---")
-st.markdown("🚀 **Haroldohorta GitHub** | Rescate de Patrimonio Nikon (39.000 archivos) | Backup Maestro 28TB Operativo")
-st.success("✅ **Modo Despliegue Completado.** Insumo listo para presentación institucional.")
+except Exception as e:
+    st.error(f"❌ Error de Carga: Verifica que los archivos estén en la carpeta 'data/'. Detalles: {e}")
