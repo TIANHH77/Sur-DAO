@@ -23,6 +23,7 @@ graph TD
     C[Proyectos Comunitarios] --> E
     D[Normativa Legal] --> E
     E --> F[Fortalecimiento Capa Sombra]
+```
   
 🛠️ El Motor: Dashboard de Auditoría Sistémica
 Nuestra herramienta (surdao_app.py) cruza 4 dimensiones de datos para transformar la realidad:
@@ -46,4 +47,5 @@ graph TD
     E --> F[Custodia Ética]
     F --> G[Decisión Humana]
     G --> H[Transformación Situada]
+```
 
