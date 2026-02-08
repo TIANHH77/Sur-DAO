@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import os
 
-# --- 1. CONFIGURACIÓN VISUAL (ESTÉTICA SUR DAO) ---
-st.set_page_config(page_title="SUR DAO - Radar SIES", layout="wide", page_icon="🌑")
+# --- 1. CONFIGURACIÓN DEL HANGAR (VISUAL) ---
+st.set_page_config(page_title="SUR DAO - Master", layout="wide", page_icon="🌑")
 
-# CSS Hacker/Institucional
 st.markdown("""
 <style>
     .stApp {background-color: #0E1117;}
@@ -17,196 +17,158 @@ st.markdown("""
         border-left: 5px solid #00FF00;
         box-shadow: 0 4px 6px rgba(0,0,0,0.3);
     }
+    .legal-card {
+        background-color: #1c202a;
+        padding: 15px; border-radius: 8px; border-left: 5px solid #FFD700; margin-bottom: 10px;
+    }
     h1, h2, h3 {color: #E0E0E0 !important;}
-    .big-number {font-size: 2.5em; font-weight: bold; color: #4CAF50;}
-    .shame-number {font-size: 2.5em; font-weight: bold; color: #FF4B4B;}
-    .css-1aumxhk {background-color: #262730;} 
+    .big-number {font-size: 2.2em; font-weight: bold; color: #4CAF50;}
+    .shame-number {font-size: 2.2em; font-weight: bold; color: #FF4B4B;}
+    .info-text {color: #B0B0B0;}
 </style>
 """, unsafe_allow_html=True)
 
-# --- 2. EL REACTOR DE DATOS (CARGA ROBUSTA) ---
+# --- 2. EL REACTOR DE DATOS (CARGA INTELIGENTE) ---
 @st.cache_data
 def load_data():
-    # Rutas relativas a la carpeta 'data/'
-    path_oferta = os.path.join("data", "Oferta_Academica_2025_SIES_02_06_2025_WEB_E.csv")
-    path_retencion = os.path.join("data", "Informe_Retencion_SIES_2025.xlsx - Retención 1er año x IES.csv")
+    data_dict = {}
     
-    # Verificación de emergencia por si los archivos están en la raíz
-    if not os.path.exists(path_oferta): path_oferta = "Oferta_Academica_2025_SIES_02_06_2025_WEB_E.csv"
-    if not os.path.exists(path_retencion): path_retencion = "Informe_Retencion_SIES_2025.xlsx - Retención 1er año x IES.csv"
+    # RUTAS DE ARCHIVOS (Ajustadas a tu poda)
+    files = {
+        "oferta": "Oferta_Academica_2025_SIES_02_06_2025_WEB_E.csv",
+        "retencion": "Informe_Retencion_SIES_2025.xlsx - Retención 1er año x IES.csv",
+        "movilidad": "Movilidad-Regional-2025_Anexo-13112025.xlsx - Anexo Movilidad Regional.csv",
+        "duracion": "Duracion_Real_y_en-Exceso_SIES_2025.xlsx - Sobreduración de las carreras.csv"
+    }
 
+    # A) CARGA OFERTA (CORE)
     try:
-        # A) CARGAR OFERTA ACADÉMICA (Encoding latin1 y separador ;)
-        try:
-            df_oferta = pd.read_csv(path_oferta, sep=';', encoding='utf-8', on_bad_lines='skip')
-        except:
-            df_oferta = pd.read_csv(path_oferta, sep=';', encoding='latin1', on_bad_lines='skip')
+        path = os.path.join("data", files["oferta"])
+        df = pd.read_csv(path, sep=';', encoding='latin1', on_bad_lines='skip')
+        # Limpieza Arancel
+        if 'Arancel Anual' in df.columns:
+            df['Arancel Anual'] = pd.to_numeric(df['Arancel Anual'].astype(str).str.replace(r'[$.]', '', regex=True), errors='coerce')
+        data_dict["oferta"] = df
+    except: st.warning("⚠️ Falta archivo de Oferta Académica en /data")
 
-        # Limpieza de Arancel (Quitar $ y puntos)
-        if 'Arancel Anual' in df_oferta.columns:
-            df_oferta['Arancel Anual'] = pd.to_numeric(df_oferta['Arancel Anual'].astype(str).str.replace(r'[$.]', '', regex=True), errors='coerce')
-        
-        # Mapeo de Columnas Clave
-        # Buscamos las columnas aunque cambien ligeramente de nombre
-        cols_map = {
-            'Institucion': [c for c in df_oferta.columns if 'Nombre IES' in c][0],
-            'Carrera': [c for c in df_oferta.columns if 'Nombre Carrera' in c][0],
-            'Generica': [c for c in df_oferta.columns if 'Carrera Genérica' in c][0],
-            'Arancel': 'Arancel Anual',
-            'Duracion_Formal': [c for c in df_oferta.columns if 'Duración Total' in c][0],
-            'Region': [c for c in df_oferta.columns if 'Región Sede' in c][0]
-        }
-        
-        df_core = df_oferta[list(cols_map.values())].copy()
-        df_core.columns = cols_map.keys() # Renombrar a nombres estándar
-        
-        # B) CARGAR RETENCIÓN (Buscando el encabezado correcto)
-        df_ret_raw = pd.read_csv(path_retencion, sep=',', header=None)
-        # Encontrar la fila que dice "Nombre de la institución"
-        header_row = df_ret_raw[df_ret_raw.apply(lambda x: x.astype(str).str.contains('Nombre de la institución').any(), axis=1)].index[0]
-        df_ret = pd.read_csv(path_retencion, sep=',', header=header_row)
-        
-        # Seleccionar Institución y último año disponible (2024 o 2023)
+    # B) CARGA RETENCIÓN
+    try:
+        path = os.path.join("data", files["retencion"])
+        # Buscamos el header dinámicamente
+        df_raw = pd.read_csv(path, sep=',', header=None)
+        header_idx = df_raw[df_raw.apply(lambda x: x.astype(str).str.contains('Nombre de la institución').any(), axis=1)].index[0]
+        df_ret = pd.read_csv(path, sep=',', header=header_idx)
+        # Normalizar
         col_ies = [c for c in df_ret.columns if 'Nombre de la institución' in c][0]
-        col_dato = [c for c in df_ret.columns if '2024' in str(c)]
-        if not col_dato: col_dato = [c for c in df_ret.columns if '2023' in str(c)]
-        
-        df_ret = df_ret[[col_ies, col_dato[0]]].copy()
-        df_ret.columns = ['Institucion', 'Retencion_Actual']
-        
-        # C) FUSIÓN DE DATOS (MERGE)
-        # Normalizar nombres para que crucen bien (Mayúsculas y sin espacios extra)
-        df_core['Institucion'] = df_core['Institucion'].astype(str).str.upper().str.strip()
-        df_ret['Institucion'] = df_ret['Institucion'].astype(str).str.upper().str.strip()
-        
-        df_final = pd.merge(df_core, df_ret, on='Institucion', how='left')
-        
-        # Imputación Inteligente: Si no hay dato de retención, usar promedio nacional para no romper la gráfica
-        avg_ret = df_final['Retencion_Actual'].mean()
-        df_final['Retencion_Actual'] = df_final['Retencion_Actual'].fillna(avg_ret)
-        
-        # D) CÁLCULOS KPI SUR DAO
-        df_final['Tasa_Desercion'] = 1 - df_final['Retencion_Actual']
-        # Capital en Riesgo = Arancel * Deserción (Dinero que se va con los alumnos)
-        df_final['Capital_Riesgo_MM'] = (df_final['Arancel'] * df_final['Tasa_Desercion']) / 1000000 
-        
-        return df_final
+        col_val = [c for c in df_ret.columns if '2024' in str(c)][0]
+        df_ret = df_ret[[col_ies, col_val]].copy()
+        df_ret.columns = ['Institucion', 'Retencion']
+        df_ret['Institucion'] = df_ret['Institucion'].str.upper().str.strip()
+        data_dict["retencion"] = df_ret
+    except: pass
 
-    except Exception as e:
-        st.error(f"Error cargando datos: {e}")
-        return pd.DataFrame()
+    # C) CARGA MOVILIDAD (LA JOYA)
+    try:
+        path = os.path.join("data", files["movilidad"])
+        # Header suele estar abajo
+        df_mov = pd.read_csv(path, sep=',', header=None)
+        h_idx = df_mov[df_mov.apply(lambda x: x.astype(str).str.contains('Región egreso EM').any(), axis=1)].index[0]
+        df_mov = pd.read_csv(path, sep=',', header=h_idx)
+        data_dict["movilidad"] = df_mov
+    except: pass
 
-df = load_data()
+    # D) FUSIÓN MAESTRA (SIES CORE)
+    if "oferta" in data_dict and "retencion" in data_dict:
+        df_main = data_dict["oferta"].copy()
+        # Normalizar para cruce
+        col_ies_main = [c for c in df_main.columns if 'Nombre IES' in c][0]
+        df_main[col_ies_main] = df_main[col_ies_main].str.upper().str.strip()
+        
+        df_final = pd.merge(df_main, data_dict["retencion"], left_on=col_ies_main, right_on='Institucion', how='left')
+        
+        # Cálculos SUR DAO
+        df_final['Retencion'] = df_final['Retencion'].fillna(df_final['Retencion'].mean())
+        df_final['Desercion'] = 1 - df_final['Retencion']
+        if 'Arancel Anual' in df_final.columns:
+            df_final['Capital_Riesgo'] = (df_final['Arancel Anual'] * df_final['Desercion']) / 1000000 # MM$
+        
+        data_dict["master"] = df_final
 
-# --- 3. BARRA LATERAL (PANEL DE CONTROL) ---
+    return data_dict
+
+db = load_data()
+
+# --- 3. SIDEBAR DE CONTROL ---
 with st.sidebar:
     st.title("🎛️ SUR DAO Control")
-    st.markdown("---")
+    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Logo_Usach.svg/1200px-Logo_Usach.svg.png", width=80)
     
-    st.markdown("### 🔮 Simulador de Futuro")
-    meta_recuperacion = st.slider("Meta de Recuperación (%)", 0, 50, 10, 
-                                  help="Si aplicamos acompañamiento, ¿qué % de la deserción evitamos?")
+    st.markdown("### 🎯 Simulador de Impacto")
+    meta = st.slider("Meta Recuperación (%)", 0, 50, 15)
     
-    st.markdown("---")
-    st.markdown("### 📍 Filtros Territoriales")
+    st.markdown("### 📂 Estado de Datos")
+    if "master" in db: st.success("✅ SIES Core: Activo")
+    if "movilidad" in db: st.success("✅ Movilidad: Activo")
+    else: st.warning("⚠️ Movilidad: Off")
     
-    if not df.empty:
-        lista_regiones = ["Todas"] + sorted(df['Region'].dropna().unique().tolist())
-        filtro_region = st.selectbox("Región", lista_regiones)
-        
-        lista_areas = ["Todas"] + sorted(df['Generica'].dropna().unique().tolist())
-        filtro_area = st.selectbox("Área de Conocimiento", lista_areas)
-    
-    st.markdown("---")
-    st.link_button("🏛️ Conectar con USACH", "https://www.usach.cl")
-    st.caption("Protocolo v2026.1 - Capa Sombra")
+    st.divider()
+    st.caption("v2026.02 | Junín Hangar")
 
-# --- 4. DASHBOARD INTERACTIVO ---
-if not df.empty:
-    # Aplicar Filtros
-    df_view = df.copy()
-    if filtro_region != "Todas":
-        df_view = df_view[df_view['Region'] == filtro_region]
-    if filtro_area != "Todas":
-        df_view = df_view[df_view['Generica'] == filtro_area]
-
-    # Lógica del Simulador
-    df_view['Capital_Recuperado'] = df_view['Capital_Riesgo_MM'] * (meta_recuperacion / 100)
+# --- 4. DASHBOARD MULTI-DIMENSIONAL ---
+if "master" in db:
+    df = db["master"]
     
-    # Totales para las Tarjetas
-    total_riesgo = df_view['Capital_Riesgo_MM'].sum()
-    total_recuperado = df_view['Capital_Recuperado'].sum()
-    total_programas = len(df_view)
-
-    # Título Dinámico
-    st.title(f"🌑 Radar de Capital Humano: {filtro_region}")
-    st.markdown(f"#### Analizando **{total_programas}** programas académicos activos")
-
-    # Tarjetas de KPI
-    col1, col2, col3 = st.columns(3)
-    col1.markdown(f"<div class='metric-card'><h3>💸 Sangría del Sistema</h3><p class='shame-number'>${total_riesgo:,.0f} MM</p><p>Perdidos anualmente por deserción</p></div>", unsafe_allow_html=True)
-    col2.markdown(f"<div class='metric-card'><h3>🛡️ Capital Recuperable</h3><p class='big-number'>${total_recuperado:,.0f} MM</p><p>Si aplicamos el Modelo SUR DAO</p></div>", unsafe_allow_html=True)
-    col3.markdown(f"<div class='metric-card'><h3>🌱 Índice de Impacto</h3><p class='big-number'>Alto</p><p>Oportunidad de intervención</p></div>", unsafe_allow_html=True)
+    # Encabezado
+    total_millones = df['Capital_Riesgo'].sum()
+    recuperado_sim = total_millones * (meta/100)
+    
+    st.title("🌑 Protocolo SUR DAO: Auditoría Sistémica")
+    st.markdown("#### *Convirtiendo la falla del sistema en infraestructura común*")
+    
+    # Tarjetas KPI
+    k1, k2, k3, k4 = st.columns(4)
+    k1.markdown(f"<div class='metric-card'><h3>💸 Sangría Anual</h3><p class='shame-number'>${total_millones:,.0f} MM</p><p>Dinero quemado en deserción</p></div>", unsafe_allow_html=True)
+    k2.markdown(f"<div class='metric-card'><h3>🛡️ Rescate SUR DAO</h3><p class='big-number'>${recuperado_sim:,.0f} MM</p><p>Con {meta}% de retención</p></div>", unsafe_allow_html=True)
+    k3.markdown(f"<div class='metric-card'><h3>⚖️ Base Legal</h3><p class='big-number'>Res. 8417</p><p>Formación Integral</p></div>", unsafe_allow_html=True)
+    k4.markdown(f"<div class='metric-card'><h3>🗺️ Fuga Regional</h3><p class='shame-number'>Alta</p><p>Centralismo Académico</p></div>", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Pestañas de Análisis
-    tab1, tab2, tab3 = st.tabs(["📊 Mapa de Calor", "🧬 Simulador de Rescate", "📜 Manifiesto"])
+    # PESTAÑAS PODEROSAS
+    tabs = st.tabs(["📊 Radar Financiero", "⚖️ Hacking Normativo", "🗺️ Sangría Territorial", "⏳ Deuda de Vida"])
 
-    with tab1:
-        st.subheader("Instituciones con Mayor Riesgo Financiero/Social")
-        # Agrupar por Institución
-        df_chart = df_view.groupby('Institucion')[['Capital_Riesgo_MM', 'Tasa_Desercion']].mean().reset_index()
-        df_chart['Total_Riesgo'] = df_view.groupby('Institucion')['Capital_Riesgo_MM'].sum().values
-        # Top 15
+    # 1. RADAR FINANCIERO (El dinero manda)
+    with tabs[0]:
+        st.subheader("Mapa de Calor: Dónde se pierde el capital")
+        col_ies = [c for c in df.columns if 'Nombre IES' in c][0]
+        
+        df_chart = df.groupby(col_ies)[['Capital_Riesgo', 'Desercion']].mean().reset_index()
+        df_chart['Total_Riesgo'] = df.groupby(col_ies)['Capital_Riesgo'].sum().values
         df_chart = df_chart.sort_values('Total_Riesgo', ascending=False).head(15)
         
-        fig = px.bar(df_chart, x='Institucion', y='Total_Riesgo', color='Tasa_Desercion',
-                     title="Dinero en Riesgo por Institución (Color = Tasa Deserción)",
-                     labels={'Total_Riesgo': 'Millones de Pesos (MM$)', 'Tasa_Desercion': 'Deserción'},
-                     color_continuous_scale='Reds')
+        fig = px.bar(df_chart, x=col_ies, y='Total_Riesgo', color='Desercion',
+                     title="Top 15 Instituciones con mayor pérdida de capital social (MM$)",
+                     color_continuous_scale='Reds', height=500)
         st.plotly_chart(fig, use_container_width=True)
 
-    with tab2:
-        st.subheader(f"Proyección: Recuperando el {meta_recuperacion}% de trayectorias")
-        
-        col_sim1, col_sim2 = st.columns([2, 1])
-        with col_sim1:
-            # Scatter Plot: Costo vs Deserción
-            fig2 = px.scatter(df_view.sample(min(500, len(df_view))), 
-                              x="Arancel", y="Tasa_Desercion", 
-                              size="Duracion_Formal", color="Generica",
-                              hover_name="Carrera",
-                              title="Mapa de Fricción: Costo vs Abandono (Muestra representativa)")
-            st.plotly_chart(fig2, use_container_width=True)
-        
-        with col_sim2:
-            st.info("""
-            **¿Qué estamos viendo?**
-            Cada punto es una carrera. Los puntos altos son alta deserción.
-            
-            **La Propuesta SUR DAO:**
-            No se trata de bajar la exigencia, sino de **acompañar la trayectoria**.
-            Al aplicar el protocolo de 'Trueque Educativo' y 'Nodos Comunitarios',
-            convertimos esa deserción en capital social activo.
-            """)
-            st.success(f"💰 Ahorro Proyectado: **${total_recuperado:,.0f} MM**")
-
-    with tab3:
-        st.markdown("""
-        ### 🌑 Protocolo de la Capa Sombra
-        
-        **1. El Diagnóstico:** El sistema actual considera la deserción como un "fracaso". Nosotros la vemos como una **fuga de capital**.
-        
-        **2. La Solución:**
-        Utilizar la infraestructura de la USACH como "Bisagra" para validar saberes informales.
-        
-        **3. El Futuro:**
-        Tokenizar la actividad comunitaria para que nadie caiga al vacío.
-        
-        > *"La sombra no se vende. La custodia no se compra. Lo humano decide."*
-        """)
-
-else:
-    st.warning("⚠️ Esperando datos... Por favor asegúrate de tener la carpeta 'data/' con los archivos CSV del SIES.")
-    st.info("Estructura requerida: /data/Oferta_Academica...csv y /data/Informe_Retencion...csv")
+    # 2. HACKING NORMATIVO (Tu as bajo la manga)
+    with tabs[1]:
+        st.subheader("🛠️ Infraestructura Legal Habilitante")
+        c_leg1, c_leg2 = st.columns([1, 1])
+        with c_leg1:
+            st.markdown("""
+            <div class='legal-card'>
+                <h4>📄 Resolución Exenta N° 8417 (2019)</h4>
+                <p><b>'Normativa de Formación Integral'</b></p>
+                <p>El Art. 1 define formación integral como actividades para el <i>bienestar y la comunidad</i>.</p>
+                <p>👉 <b>Hack:</b> Las actividades de SUR DAO (Ollas comunes, Archivos) caen en esta definición.</p>
+            </div>
+            <div class='legal-card'>
+                <h4>📄 Resolución Exenta N° 1983 (2018)</h4>
+                <p><b>'Reglamento de Convalidaciones'</b></p>
+                <p>Permite reconocer aprendizajes <i>independiente de dónde se obtuvieron</i>.</p>
+                <p>👉 <b>Hack:</b> Permite convalidar la experiencia en la Sombra por créditos académicos.</p>
+            </div>
+            """, unsafe_allow_html=True)
+        with c_leg2:
+            st.markdown("### 🧬 Simulador de Convalidación")
