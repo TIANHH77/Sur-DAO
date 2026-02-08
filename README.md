@@ -24,6 +24,73 @@ graph TD
     G --> H[IA como Custodia Humana]
     H --> I[Cuarto Poder: Dashboard Sur]
     I --> J[Transformación situada]
+```
+
+📡 2. La Tesis: De la Deserción al Capital Comunitario
+El sistema actual diagnostica la "deserción universitaria" como un fracaso. Nosotros la auditamos como una fuga de capital social.
+
+Utilizamos la infraestructura institucional (USACH) como bisagra para validar saberes adquiridos en la informalidad ("Capa Sombra") mediante normativas existentes que el sistema ignora.
+
+```mermaid
+graph TD
+    A[Código técnico] --> E[Dashboard SUR]
+    B[Datos SIES 2025] --> E
+    C[Proyectos Comunitarios] --> E
+    D[Normativa Legal] --> E
+    E --> F[Fortalecimiento Capa Sombra]
+```
+🛠️ 3. El Motor: Dashboard de Auditoría Sistémica
+Nuestra herramienta (surdao_app.py) cruza 4 dimensiones de datos para transformar la realidad:
+
+💸 Financiera: Cruce de Oferta Académica vs Retención para calcular los MM$ perdidos.
+
+⚖️ Legal (Hacking Normativo): Aplicación de Res. 8417 (Formación Integral) y Res. 1983 (Convalidación).
+
+🗺️ Territorial: Matriz de Movilidad Regional que visualiza la fuga de talentos.
+
+⏳ Temporal: Cálculo de la Sobreduración como "tiempo de vida robado".
+
+Mecánica de Recuperación
+
+```mermaid
+graph TD
+    A[Indicadores SIES] --> B[Alertas Críticas]
+    B --> C[Mapa de Oportunidades]
+    C --> D[Simulación Legal]
+    D --> E[Impacto Recuperado]
+    E --> F[Custodia Ética]
+    F --> G[Decisión Humana]
+    G --> H[Transformación Situada]
+```
+🔄 4. El Ciclo Vital: Retorno a la Comunidad
+El objetivo final no es el dato, es la Acción Colectiva.
+
+```mermaid
+graph TD
+    A[Comunidad Humana] --> B[Institución]
+    B --> C[Datos Invisibles]
+    C --> D[Dashboard SUR]
+
+    D --> E[IA Custodia Ética]
+    E --> F[Transparencia]
+    E --> G[Acción Colectiva]
+
+    F --> H[Decisión Humana]
+    G --> H
+    H --> A
+```
+
+📂 Estructura del Repositorio
+
+SUR-DAO/
+├── surdao_app.py      # El Código Maestro (Dashboard v5)
+├── requirements.txt   # Dependencias (Streamlit, Pandas, Plotly)
+├── data/              # La Bencina del Sistema (CSVs SIES 2025)
+│   ├── Oferta_Academica...
+│   ├── Informe_Retencion...
+│   ├── Movilidad-Regional...
+│   └── Duracion_Real...
+└── docs/              # La Base Legal (PDFs Resoluciones)
 
 
 
