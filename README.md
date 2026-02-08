@@ -48,4 +48,15 @@ graph TD
     F --> G[Decisión Humana]
     G --> H[Transformación Situada]
 ```
+📂 Estructura del Repositorio
+SUR-DAO/
+├── surdao_app.py      # El Código Maestro (Dashboard v5)
+├── requirements.txt   # Dependencias (Streamlit, Pandas, Plotly)
+├── data/              # La Bencina del Sistema (CSVs SIES 2025)
+│   ├── Oferta_Academica...
+│   ├── Informe_Retencion...
+│   ├── Movilidad-Regional...
+│   └── Duracion_Real...
+└── docs/              # La Base Legal (PDFs Resoluciones)
+
 
