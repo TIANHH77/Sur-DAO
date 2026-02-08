@@ -29,8 +29,11 @@ graph TD
 Nuestra herramienta (surdao_app.py) cruza 4 dimensiones de datos para transformar la realidad:
 
 💸 Financiera: Cruce de Oferta Académica vs Retención para calcular los MM$ perdidos.
+
 ⚖️ Legal (Hacking Normativo): Aplicación de Res. 8417 (Formación Integral) y Res. 1983 (Convalidación) para convertir actividades como "ollas comunes" en créditos académicos.
+
 🗺️ Territorial: Matriz de Movilidad Regional que visualiza la fuga de talentos hacia la capital.
+
 ⏳ Temporal: Cálculo de la Sobreduración como "tiempo de vida robado".
 
 Flujo de Transformación
