@@ -29,11 +29,8 @@ graph TD
 Nuestra herramienta (surdao_app.py) cruza 4 dimensiones de datos para transformar la realidad:
 
 💸 Financiera: Cruce de Oferta Académica vs Retención para calcular los MM$ perdidos.
-
 ⚖️ Legal (Hacking Normativo): Aplicación de Res. 8417 (Formación Integral) y Res. 1983 (Convalidación) para convertir actividades como "ollas comunes" en créditos académicos.
-
 🗺️ Territorial: Matriz de Movilidad Regional que visualiza la fuga de talentos hacia la capital.
-
 ⏳ Temporal: Cálculo de la Sobreduración como "tiempo de vida robado".
 
 Flujo de Transformación
@@ -58,5 +55,17 @@ SUR-DAO/
 │   ├── Movilidad-Regional...
 │   └── Duracion_Real...
 └── docs/              # La Base Legal (PDFs Resoluciones)
+
+🧬 Nodos Activos en la Espiral
+📍 Nodo 01: La Bisagra Institucional (USACH)
+Utilizamos el Reglamento de Convalidación (Res. 1983) para hackear la malla curricular rígida.
+Objetivo: Transformar al "desertor" en "agente comunitario validado".
+
+📍 Nodo 02: Custodia de Trayectorias (Caso Haroldo Horta)
+El piloto de prueba. Demostración empírica de cómo una vida "descartada" por la burocracia (sin pensión, nómade) posee un valor patrimonial incalculable.
+Ver Nodo: Atlas Haroldo Horta
+
+📍 Nodo 03: Economía Recíproca
+Un mercado donde no se acumula, se circula. Trueque consentido y depuración de residuos sistémicos.
 
 
