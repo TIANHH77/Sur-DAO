@@ -31,6 +31,8 @@ El sistema actual diagnostica la "deserción universitaria" como un fracaso. Nos
 
 Utilizamos la infraestructura institucional (USACH) como bisagra para validar saberes adquiridos en la informalidad ("Capa Sombra") mediante normativas existentes que el sistema ignora.
 
+🧬 Flujo de Datos y Resistencia
+
 ```mermaid
 graph TD
     A[Código técnico] --> E[Dashboard SUR]
@@ -39,6 +41,7 @@ graph TD
     D[Normativa Legal] --> E
     E --> F[Fortalecimiento Capa Sombra]
 ```
+
 🛠️ 3. El Motor: Dashboard de Auditoría Sistémica
 Nuestra herramienta (surdao_app.py) cruza 4 dimensiones de datos para transformar la realidad:
 
@@ -62,7 +65,32 @@ graph TD
     F --> G[Decisión Humana]
     G --> H[Transformación Situada]
 ```
-🔄 4. El Ciclo Vital: Retorno a la Comunidad
+🤝 4. Protocolo de Contribución: La Espiral Abierta
+SUR DAO no es solo código. La sombra se construye desde múltiples frentes. Identifica tu nodo y únete:
+
+```mermaid
+graph TD
+    A[🟣 SUR DAO - Capa Sombra] --> B[👩‍💻 Código]
+    A --> C[📊 Datos]
+    A --> D[🌐 Proyectos comunitarios]
+    A --> E[📝 Relatos]
+
+    B --> B1[Mejorar dashboard]
+    B --> B2[Optimizar KPIs y visualizaciones]
+
+    C --> C1[Ingresar personas para trueque]
+    C --> C2[Validar datasets]
+    C --> C3[Documentar nuevas fuentes]
+
+    D --> D1[Integrar iniciativas existentes]
+    D --> D2[Conectar experiencias territoriales]
+    D --> D3[Proponer indicadores comunitarios]
+
+    E --> E1[Escribir historias personales]
+    E --> E2[Reflexiones sobre deserción/empleabilidad]
+    E --> E3[Metáforas y narrativas colectivas]
+```
+🔄 5. El Ciclo Vital
 El objetivo final no es el dato, es la Acción Colectiva.
 
 ```mermaid
@@ -81,7 +109,6 @@ graph TD
 ```
 
 📂 Estructura del Repositorio
-
 SUR-DAO/
 ├── surdao_app.py      # El Código Maestro (Dashboard v5)
 ├── requirements.txt   # Dependencias (Streamlit, Pandas, Plotly)
@@ -92,5 +119,20 @@ SUR-DAO/
 │   └── Duracion_Real...
 └── docs/              # La Base Legal (PDFs Resoluciones)
 
+🧬 Nodos Activos en la Espiral
+📍 Nodo 01: La Bisagra Institucional (USACH)
+Utilizamos el Reglamento de Convalidación (Res. 1983) para hackear la malla curricular rígida.
+Objetivo: Transformar al "desertor" en "agente comunitario validado".
+
+📍 Nodo 02: Custodia de Trayectorias (Caso Haroldo Horta)
+El piloto de prueba. Demostración empírica de cómo una vida "descartada" por la burocracia posee un valor patrimonial incalculable.
+Ver Nodo: Atlas Haroldo Horta
+
+📍 Nodo 03: Economía Recíproca
+Un mercado donde no se acumula, se circula. Trueque consentido y depuración de residuos sistémicos.
+    
+
+
+    
 
 
