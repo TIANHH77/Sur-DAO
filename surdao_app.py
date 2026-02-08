@@ -4,10 +4,9 @@ import plotly.express as px
 import os
 import numpy as np
 
-# --- 1. CONFIGURACIÓN DEL HANGAR (VISUAL) ---
-st.set_page_config(page_title="SUR DAO - Master", layout="wide", page_icon="🌑")
+# --- 1. CONFIGURACIÓN DEL HANGAR (ESTÉTICA SUR DAO) ---
+st.set_page_config(page_title="SUR DAO - Master v5.0", layout="wide", page_icon="🌑")
 
-# CSS: Estética Hacker / Institucional Dark
 st.markdown("""
 <style>
     .stApp {background-color: #0E1117;}
@@ -26,136 +25,154 @@ st.markdown("""
     p, li {color: #B0B0B0 !important;}
     .big-number {font-size: 2.2em; font-weight: bold; color: #4CAF50;}
     .shame-number {font-size: 2.2em; font-weight: bold; color: #FF4B4B;}
-    .css-1aumxhk {background-color: #262730;} 
 </style>
 """, unsafe_allow_html=True)
 
-# --- 2. EL REACTOR DE DATOS (CARGA INTELIGENTE) ---
+# --- 2. EL REACTOR DE DATOS (SABUESO V6) ---
 @st.cache_data
 def load_data():
     data_dict = {}
     
-    # NOMBRES DE ARCHIVOS (Tal cual los tienes en /data)
-    files = {
-        "oferta": "Oferta_Academica_2025_SIES_02_06_2025_WEB_E.csv",
-        "retencion": "Informe_Retencion_SIES_2025.xlsx - Retención 1er año x IES.csv",
-        "movilidad": "Movilidad-Regional-2025_Anexo-13112025.xlsx - Anexo Movilidad Regional.csv",
-        "duracion": "Duracion_Real_y_en-Exceso_SIES_2025.xlsx - Durac. Real y Exceso Carr.csv" 
-        # Nota: Si no tienes el específico de Carreras, usa el de Sobreduración, el código intentará adaptarse.
+    # Palabras clave para identificar archivos aunque cambien de nombre
+    keywords = {
+        "oferta": ["Oferta", "Academica", "2025"],
+        "retencion": ["Retencion", "IES"],
+        "movilidad": ["Movilidad", "Regional"],
+        "duracion": ["Duracion", "Real", "Instituciones"]
     }
 
-    # Helper para rutas
-    def get_path(fname):
-        if os.path.exists(os.path.join("data", fname)): return os.path.join("data", fname)
-        if os.path.exists(fname): return fname
+    def encontrar_archivo(palabras_clave):
+        for directorio in ['data', '.']:
+            if os.path.exists(directorio):
+                for archivo in os.listdir(directorio):
+                    if all(k.lower() in archivo.lower() for k in palabras_clave):
+                        return os.path.join(directorio, archivo)
         return None
 
-    # A) CARGA OFERTA (CORE)
-    path = get_path(files["oferta"])
-    if path:
+    # A) CARGA OFERTA
+    path_of = encontrar_archivo(keywords["oferta"])
+    if path_of:
         try:
-            # Intentar leer con ; y encoding variable
-            df = pd.read_csv(path, sep=';', encoding='latin1', on_bad_lines='skip', low_memory=False)
-            # Limpieza Arancel
+            df = pd.read_csv(path_of, sep=';', encoding='latin1', on_bad_lines='skip', low_memory=False)
             if 'Arancel Anual' in df.columns:
                 df['Arancel Anual'] = pd.to_numeric(df['Arancel Anual'].astype(str).str.replace(r'[$.]', '', regex=True), errors='coerce')
             data_dict["oferta"] = df
-        except Exception as e: st.error(f"Error cargando Oferta: {e}")
-
-    # B) CARGA RETENCIÓN (Buscador de Header)
-    path = get_path(files["retencion"])
-    if path:
-        try:
-            # Leemos las primeras 20 filas para encontrar dónde empieza la tabla
-            df_raw = pd.read_csv(path, sep=',', header=None, nrows=20)
-            # Buscamos la fila que contiene "Nombre de la institución"
-            header_row = df_raw[df_raw.apply(lambda x: x.astype(str).str.contains('Nombre de la institución', case=False).any(), axis=1)].index[0]
-            
-            df_ret = pd.read_csv(path, sep=',', header=header_row)
-            
-            # Normalizar columnas
-            col_ies = [c for c in df_ret.columns if 'Nombre de la institución' in c or 'Nombre IES' in c][0]
-            # Buscamos la columna más reciente (2024, 2023...)
-            cols_years = [c for c in df_ret.columns if '2024' in str(c)]
-            if not cols_years: cols_years = [c for c in df_ret.columns if '2023' in str(c)]
-            
-            if cols_years:
-                df_ret = df_ret[[col_ies, cols_years[0]]].copy()
-                df_ret.columns = ['Institucion', 'Retencion']
-                df_ret['Institucion'] = df_ret['Institucion'].astype(str).str.upper().str.strip()
-                data_dict["retencion"] = df_ret
         except: pass
 
-    # C) CARGA MOVILIDAD (LA JOYA)
-    path = get_path(files["movilidad"])
-    if path:
+    # B) CARGA RETENCIÓN
+    path_ret = encontrar_archivo(keywords["retencion"])
+    if path_ret:
         try:
-            df_raw = pd.read_csv(path, sep=',', header=None, nrows=20)
-            # El header suele ser "Región egreso EM" vs Regiones
-            h_idx = df_raw[df_raw.apply(lambda x: x.astype(str).str.contains('Región egreso EM', case=False).any(), axis=1)].index[0]
-            df_mov = pd.read_csv(path, sep=',', header=h_idx)
-            # Limpieza básica: Primera columna como índice
+            df_raw = pd.read_csv(path_ret, sep=',', header=None, nrows=20)
+            h_idx = df_raw[df_raw.apply(lambda x: x.astype(str).str.contains('Nombre de la institución', case=False).any(), axis=1)].index[0]
+            df_ret = pd.read_csv(path_ret, sep=',', header=h_idx)
+            col_ies = [c for c in df_ret.columns if 'Nombre' in c and 'institución' in c][0]
+            col_val = [c for c in df_ret.columns if '2024' in str(c)][0]
+            df_ret = df_ret[[col_ies, col_val]].copy()
+            df_ret.columns = ['Institucion', 'Retencion']
+            df_ret['Institucion'] = df_ret['Institucion'].astype(str).str.upper().str.strip()
+            data_dict["retencion"] = df_ret
+        except: pass
+
+    # C) CARGA MOVILIDAD
+    path_mov = encontrar_archivo(keywords["movilidad"])
+    if path_mov:
+        try:
+            df_raw_m = pd.read_csv(path_mov, sep=',', header=None, nrows=20)
+            h_idx_m = df_raw_m[df_raw_m.apply(lambda x: x.astype(str).str.contains('Región egreso EM', case=False).any(), axis=1)].index[0]
+            df_mov = pd.read_csv(path_mov, sep=',', header=h_idx_m)
             df_mov.set_index(df_mov.columns[0], inplace=True)
-            # Quedarnos solo con las columnas de regiones (limpiar totales si existen)
             data_dict["movilidad"] = df_mov
         except: pass
 
-    # D) CARGA DURACIÓN (Opcional)
-    path = get_path(files["duracion"])
-    if path:
-        try:
-            df_raw = pd.read_csv(path, sep=',', header=None, nrows=20)
-            h_idx = df_raw[df_raw.apply(lambda x: x.astype(str).str.contains('Carrera Genérica', case=False).any(), axis=1)].index[0]
-            df_dur = pd.read_csv(path, sep=',', header=h_idx)
-            
-            col_nom = [c for c in df_dur.columns if 'Carrera Genérica' in c][0]
-            col_real = [c for c in df_dur.columns if 'Duración Real 2024' in c]
-            if not col_real: col_real = [c for c in df_dur.columns if 'Duración Real' in c]
-            
-            if col_real:
-                df_dur = df_dur[[col_nom, col_real[0]]].copy()
-                df_dur.columns = ['Generica', 'Duracion_Real']
-                df_dur['Generica'] = df_dur['Generica'].astype(str).str.upper().str.strip()
-                data_dict["duracion"] = df_dur
-        except: pass
-
-    # E) FUSIÓN MAESTRA (SIES CORE)
+    # D) FUSIÓN MAESTRA
     if "oferta" in data_dict and "retencion" in data_dict:
-        df_main = data_dict["oferta"].copy()
-        
-        # Mapeo de columnas Oferta
-        cols_map = {}
-        for c in df_main.columns:
-            if 'Nombre IES' in c: cols_map['Institucion'] = c
-            elif 'Nombre Carrera' in c: cols_map['Carrera'] = c
-            elif 'Carrera Genérica' in c: cols_map['Generica'] = c
-            elif 'Arancel Anual' in c: cols_map['Arancel'] = c
-            elif 'Duración Total' in c: cols_map['Duracion_Formal'] = c
-            elif 'Región Sede' in c: cols_map['Region'] = c
-        
-        # Filtrar solo columnas útiles y renombrar
-        df_core = df_main[list(cols_map.values())].copy()
-        df_core.columns = list(cols_map.keys())
-        
-        # Normalizar para cruce
+        df_of = data_dict["oferta"].copy()
+        # Mapeo flexible
+        cols = {
+            'Institucion': [c for c in df_of.columns if 'Nombre IES' in c][0],
+            'Carrera': [c for c in df_of.columns if 'Nombre Carrera' in c][0],
+            'Generica': [c for c in df_of.columns if 'Carrera Genérica' in c][0],
+            'Arancel': 'Arancel Anual',
+            'Duracion': [c for c in df_of.columns if 'Duración Total' in c][0],
+            'Region': [c for c in df_of.columns if 'Región Sede' in c][0]
+        }
+        df_core = df_of[list(cols.values())].copy()
+        df_core.columns = list(cols.keys())
         df_core['Institucion'] = df_core['Institucion'].astype(str).str.upper().str.strip()
-        df_core['Generica'] = df_core['Generica'].astype(str).str.upper().str.strip()
-
-        # MERGE 1: Retención (Por Institución)
-        df_final = pd.merge(df_core, data_dict["retencion"], on='Institucion', how='left')
         
-        # MERGE 2: Duración Real (Por Carrera Genérica) - Si existe
-        if "duracion" in data_dict:
-            df_final = pd.merge(df_final, data_dict["duracion"], on='Generica', how='left')
+        df_master = pd.merge(df_core, data_dict["retencion"], on='Institucion', how='left')
+        df_master['Retencion'] = pd.to_numeric(df_master['Retencion'], errors='coerce').fillna(df_master['Retencion'].mean())
+        df_master['Desercion'] = 1 - df_master['Retencion']
+        df_master['Capital_Riesgo'] = (df_master['Arancel'] * df_master['Desercion']) / 1000000
+        
+        data_dict["master"] = df_master
+
+    return data_dict
+
+db = load_data()
+
+# --- 3. DASHBOARD ---
+if "master" in db:
+    df = db["master"]
+    
+    with st.sidebar:
+        st.title("🎛️ SUR DAO Control")
+        st.divider()
+        meta = st.slider("Meta Recuperación (%)", 0, 100, 15)
+        st.divider()
+        regiones = ["Todas"] + sorted(df['Region'].unique().tolist())
+        sel_reg = st.selectbox("Región", regiones)
+        if sel_reg != "Todas":
+            df = df[df['Region'] == sel_reg]
+
+    # Cálculos dinámicos
+    total_r = df['Capital_Riesgo'].sum()
+    rescate = total_r * (meta/100)
+
+    st.title("🌑 SUR DAO: Auditoría de Capital Humano")
+    
+    col1, col2, col3 = st.columns(3)
+    col1.markdown(f"<div class='metric-card'><h3>💸 Sangría Actual</h3><p class='shame-number'>${total_r:,.0f} MM</p></div>", unsafe_allow_html=True)
+    col2.markdown(f"<div class='metric-card'><h3>🛡️ Rescate Simulado</h3><p class='big-number'>${rescate:,.0f} MM</p></div>", unsafe_allow_html=True)
+    col3.markdown(f"<div class='metric-card'><h3>⚖️ Base Habilitante</h3><p class='big-number'>Res. 1983</p></div>", unsafe_allow_html=True)
+
+    st.divider()
+
+    t1, t2, t3 = st.tabs(["📊 Radar SIES", "⚖️ Hacking Legal", "🗺️ Movilidad"])
+
+    with t1:
+        # Gráfico Instituciones
+        df_ies = df.groupby('Institucion')['Capital_Riesgo'].sum().reset_index().sort_values('Capital_Riesgo', ascending=False).head(15)
+        fig_ies = px.bar(df_ies, x='Institucion', y='Capital_Riesgo', title="MM$ en Riesgo por Institución", color_discrete_sequence=['#FF4B4B'])
+        st.plotly_chart(fig_ies, use_container_width=True)
+
+    with t2:
+        st.subheader("🛠️ Aplicación de Normativa USACH")
+        c_l1, c_l2 = st.columns(2)
+        with c_l1:
+            st.markdown("""
+            <div class='legal-card'>
+                <h4>Res. 8417: Formación Integral</h4>
+                <p>Define actividades formativas como bienestar y construcción de comunidad. SUR DAO las certifica.</p>
+            </div>
+            <div class='legal-card'>
+                <h4>Res. 1983: Convalidación</h4>
+                <p>Reconocimiento de aprendizajes independiente del origen. El trueque es convalidable.</p>
+            </div>
+            """, unsafe_allow_html=True)
+        with c_l2:
+            st.info("Simula la conversión de horas de comunidad a créditos académicos (SCT) usando la Res. 1983.")
+            h = st.number_input("Horas de Proyecto Comunitario", 0, 500, 120)
+            st.success(f"Equivalencia: {int(h/27)} SCT Recuperados")
+
+    with t3:
+        if "movilidad" in db:
+            st.subheader("Matriz de Migración Territorial")
+            fig_m = px.imshow(db["movilidad"].iloc[0:16, 0:16], color_continuous_scale='Viridis')
+            st.plotly_chart(fig_m, use_container_width=True)
         else:
-            df_final['Duracion_Real'] = df_final['Duracion_Formal'] # Fallback
+            st.warning("Archivo de Movilidad no detectado.")
 
-        # Imputaciones y Cálculos Finales
-        avg_ret = df_final['Retencion'].mean()
-        df_final['Retencion'] = df_final['Retencion'].fillna(avg_ret)
-        df_final['Desercion'] = 1 - df_final['Retencion']
-        
-        # CAPITAL EN RIESGO = Arancel * Deserción
-        df_final['Capital_Riesgo'] = (df_final['Arancel'] * df_final['Desercion']) / 1000000 # MM$
-        
-        # TIEMPO ROB
+else:
+    st.error("🚨 Datos no encontrados. Sube los archivos reales a la carpeta /data")
