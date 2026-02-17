@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ignorar archivos de datos crudos (muy pesados)
+data/*.csv
+data/*.xlsx
+data/*.xls
+
+# PERO dejar pasar el piso lustroso (archivos optimizados)
+!data/*.parquet
