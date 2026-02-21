@@ -23,10 +23,19 @@ dist-ssr
 *.sln
 *.sw?
 
-# Ignorar archivos de datos crudos (muy pesados)
-data/*.csv
-data/*.xlsx
-data/*.xls
 
-# PERO dejar pasar el piso lustroso (archivos optimizados)
+# 1. BLOQUEO TOTAL: Ignorar absolutamente todo dentro de la carpeta data/
+data/*
+
+# 2. LA EXCEPCIÓN: Dejar pasar SOLO el piso lustroso (Tus archivos maestros)
 !data/*.parquet
+!data/*.geojson
+
+# 3. DOBLE CANDADO: Bloquear estas extensiones en cualquier parte del proyecto
+*.csv
+*.xlsx
+*.xls
+
+# 4. EL CEMENTERIO: Que descansen en paz
+WEB_LEGADO/ 
+LEGADO/

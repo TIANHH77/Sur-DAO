@@ -1,135 +1,99 @@
 # 🌑 SUR DAO: Protocolo de la Capa Sombra
-> *"La sombra no se vende. La custodia no se compra. La IA vigila, pero lo humano decide."*
+> *"La rabia es el motor, el Big Data es el bisturí. La reciprocidad es el algoritmo."*
 
-**SUR DAO** es una infraestructura de resistencia diseñada para reparar la paradoja de Babel: la humanidad quiere poblar el universo, pero nuestros sistemas locales colapsan. Mientras la burocracia fragmenta la vida, nosotros construimos una **Espiral Viva** que tokeniza la actividad humana para vivir de otra manera.
+**SUR DAO** es una infraestructura de **Soberanía Digital** y **Justicia Ocupacional**. Operamos como una "bisagra" técnica para rescatar las trayectorias humanas que el sistema borra, transformando el dato académico frío en memoria viva mediante un modelo de economía de reciprocidad.
 
 [![Estado](https://img.shields.io/badge/Estado-Activo-green)](https://github.com/TIANHH77/Sur-DAO)
-[![Legal](https://img.shields.io/badge/Normativa-USACH_Res.8417-blue)](docs/)
-[![Data](https://img.shields.io/badge/Data-SIES_2025-red)](data/)
+[![Legal](https://img.shields.io/badge/Normativa-SCT_Chile-blue)](docs/)
+[![Data](https://img.shields.io/badge/Data-SIES_2018_2024-red)](data/)
 
 ---
 
-## 📡 1. Contexto: Arquitectura de 4 Capas
-No somos solo un dashboard, somos un puente entre la economía descentralizada global y la realidad local.
+## 🌿 1. Cimientos: El Modelo de Cooperación Jerárquica
+Inspirados en la ingeniería social del Imperio Inca (Arizmendi, 2025), SUR DAO no busca la acumulación de capital, sino la **redistribución del valor y el conocimiento**.
 
-```mermaid
-graph TD
-    A[Formal: DAOs Uniswap $5.4B] --> B[ZK Privacy: Midnight]
-    B --> C[Consent Match: SUR Trueque]
-    C --> D[Evolución: Legacy Proof]
+* **El Trueque Digital (Barter):** El código se entrega como una ofrenda técnica a la comunidad. A cambio, la red sostiene al auditor (el "bicho raro") mediante alianzas, replicando el sistema de *Minka* (trabajo colectivo).
+* **Justicia Ocupacional:** Entendemos el dato como un "bien común". Si el Estado falla en su custodia, la comunidad recupera la soberanía mediante la auditoría forense.
 
-    D --> E[USACH Infraestructura]
-    E --> F[DPI al Sistema]
-    F --> G[TO como Bisagra]
-    G --> H[IA como Custodia Humana]
-    H --> I[Cuarto Poder: Dashboard Sur]
-    I --> J[Transformación situada]
-```
-
-📡 2. La Tesis: De la Deserción al Capital Comunitario
-El sistema actual diagnostica la "deserción universitaria" como un fracaso. Nosotros la auditamos como una fuga de capital social.
-
-Utilizamos la infraestructura institucional (USACH) como bisagra para validar saberes adquiridos en la informalidad ("Capa Sombra") mediante normativas existentes que el sistema ignora.
-
-🧬 Flujo de Datos y Resistencia
-
-```mermaid
-graph TD
-    A[Código técnico] --> E[Dashboard SUR]
-    B[Datos SIES 2025] --> E
-    C[Proyectos Comunitarios] --> E
-    D[Normativa Legal] --> E
-    E --> F[Fortalecimiento Capa Sombra]
-```
-
-🛠️ 3. El Motor: Dashboard de Auditoría Sistémica
-Nuestra herramienta (surdao_app.py) cruza 4 dimensiones de datos para transformar la realidad:
-
-💸 Financiera: Cruce de Oferta Académica vs Retención para calcular los MM$ perdidos.
-
-⚖️ Legal (Hacking Normativo): Aplicación de Res. 8417 (Formación Integral) y Res. 1983 (Convalidación).
-
-🗺️ Territorial: Matriz de Movilidad Regional que visualiza la fuga de talentos.
-
-⏳ Temporal: Cálculo de la Sobreduración como "tiempo de vida robado".
-
-Mecánica de Recuperación
-
-```mermaid
-graph TD
-    A[Indicadores SIES] --> B[Alertas Críticas]
-    B --> C[Mapa de Oportunidades]
-    C --> D[Simulación Legal]
-    D --> E[Impacto Recuperado]
-    E --> F[Custodia Ética]
-    F --> G[Decisión Humana]
-    G --> H[Transformación Situada]
-```
-🤝 4. Protocolo de Contribución: La Espiral Abierta
-SUR DAO no es solo código. La sombra se construye desde múltiples frentes. Identifica tu nodo y únete:
-
-```mermaid
-graph TD
-    A[🟣 SUR DAO - Capa Sombra] --> B[👩‍💻 Código]
-    A --> C[📊 Datos]
-    A --> D[🌐 Proyectos comunitarios]
-    A --> E[📝 Relatos]
-
-    B --> B1[Mejorar dashboard]
-    B --> B2[Optimizar KPIs y visualizaciones]
-
-    C --> C1[Ingresar personas para trueque]
-    C --> C2[Validar datasets]
-    C --> C3[Documentar nuevas fuentes]
-
-    D --> D1[Integrar iniciativas existentes]
-    D --> D2[Conectar experiencias territoriales]
-    D --> D3[Proponer indicadores comunitarios]
-
-    E --> E1[Escribir historias personales]
-    E --> E2[Reflexiones sobre deserción/empleabilidad]
-    E --> E3[Metáforas y narrativas colectivas]
-```
-🔄 5. El Ciclo Vital
-El objetivo final no es el dato, es la Acción Colectiva.
+### 🔄 El Ciclo Vital de la Reciprocidad
+Este es el flujo de cómo SUR DAO devuelve la agencia al estudiante, rompiendo la opacidad institucional:
 
 ```mermaid
 graph TD
     A[Comunidad Humana] --> B[Institución]
-    B --> C[Datos Invisibles]
+    B --> C[Datos Invisibles / Secuestrados]
     C --> D[Dashboard SUR]
 
     D --> E[IA Custodia Ética]
-    E --> F[Transparencia]
-    E --> G[Acción Colectiva]
+    E --> F[Transparencia Forense]
+    E --> G[Acción Colectiva / Trueque SCT]
 
     F --> H[Decisión Humana]
     G --> H
-    H --> A
+    H --> A 
 ```
+📡 2. Arquitectura de 4 Capas (Protocolo Técnico)
+Operamos bajo estándares de ingeniería de datos validados por el estado del arte internacional (2022-2025):
 
-📂 Estructura del Repositorio
-SUR-DAO/
-├── surdao_app.py      # El Código Maestro (Dashboard v5)
-├── requirements.txt   # Dependencias (Streamlit, Pandas, Plotly)
-├── data/              # La Bencina del Sistema (CSVs SIES 2025)
-│   ├── Oferta_Academica...
-│   ├── Informe_Retencion...
-│   ├── Movilidad-Regional...
-│   └── Duracion_Real...
-└── docs/              # La Base Legal (PDFs Resoluciones)
+Ingesta (Silos): unificar_todo_sies.py. Exorcismo y limpieza de 800MB de microdatos (cohortes 2018-2024). El paso del caos a la estructura.
 
-🧬 Nodos Activos en la Espiral
-📍 Nodo 01: La Bisagra Institucional (USACH)
-Utilizamos el Reglamento de Convalidación (Res. 1983) para hackear la malla curricular rígida.
-Objetivo: Transformar al "desertor" en "agente comunitario validado".
+Forense (Motor Ris): motor_ris.py. Motor que calcula el "Saqueo Público". Operacionaliza la auditoría sobre la Brecha de Titulación Formal y Real (Pey et al., 2012), revelando un riesgo financiero sistémico superior a los $701.790 millones.
 
-📍 Nodo 02: Custodia de Trayectorias (Caso Haroldo Horta)
-El piloto de prueba. Demostración empírica de cómo una vida "descartada" por la burocracia posee un valor patrimonial incalculable.
-Ver Nodo: Atlas Haroldo Horta
+Visualización (Atlas): sur_dao_trayectorias_humanas.py. Dashboard territorial donde el MRUN deja de ser un número y recupera su historia.
 
-📍 Nodo 03: Economía Recíproca
-Un mercado donde no se acumula, se circula. Trueque consentido y depuración de residuos sistémicos.
+Gobernanza (DAO): Basado en Okutan et al. (2025). Red descentralizada para una auditoría ciudadana ágil.
+
+⛓️ 3. La Evidencia del Secuestro Académico
+SUR DAO no es un capricho, es la respuesta forense a un sistema que la propia academia sabe que está roto:
+
+El Imperativo Ético Traicionado: La academia diagnosticó que la movilidad es "un imperativo social y ético", pero admitió mantener nudos financieros que la bloquean (Del Valle, 2011).
+
+La Confesión Institucional: El Proyecto USA-1116 (coordinado por la USACH) reconoció el fracaso en la instalación armónica de los Créditos Transferibles (SCT), manteniendo procesos heterogéneos que secuestran la trayectoria del estudiante.
+
+El Estándar de Trueque (uOttawa & Nuffic): Mientras instituciones globales convierten las horas de contacto en créditos transables, el sistema local fuerza a "partir de cero". Basados en la Guía Práctica SCT (1 año = 60 SCT), SUR DAO actúa como un Centro de Pericia Ciudadano, transformando las horas de vida invertidas en un activo inmutable.
+
+
+🛠️ 4. Instrucciones de Operación
+Si eres un "bicho raro", investigador, o parte de la gente común que quiere auditar su institución, levanta el entorno así:
+
+# Instalar las herramientas de soberanía
+pip install pandas polars streamlit pyarrow
+
+# Ejecutar el Atlas Territorial
+streamlit run sur_dao_trayectorias_humanas.py
+
+5. Referencias de la Resistencia
+
+
+## 🏛️ 1. Reglamentación Institucional (Las Reglas del Juego)
+Documentos oficiales que demuestran la rigidez normativa y las barreras de convalidación en la educación superior chilena.
+
+* Universidad de Santiago de Chile. (2018). *Reglamento de convalidación de estudios* (Resolución N° 1983_09_05_2018). [`REGLAMENTO CONVALIDACION 1983_09_05_2018.pdf`]
+* Universidad de Santiago de Chile. (s.f.). *Reglamento general de programas de pregrado* (Resolución N° 2563). [`Reglamento-Pregrado-2563.pdf`]
+* Universidad de Santiago de Chile. (s.f.). *Normativa del Sistema de Créditos Transferibles (SCT)*. [`SCTUSACH.pdf`]
+* Universidad de Santiago de Chile. (s.f.). *Normativa de formación integral*. [`Normativa_Formacion_Integral.pdf`]
+* Registros de fragmentación de trayectorias (Datos anonimizados). [`NOTASUCEN.pdf`, `NOTASUSACH.pdf`]
+
+## ⚖️ 2. Confesiones del Sistema (Informes CRUCH y MECESUP)
+Documentos institucionales que diagnostican la incapacidad del sistema para garantizar la movilidad y titulación oportuna.
+
+* Consejo de Rectores de las Universidades Chilenas [CRUCH]. (2007). *Guía práctica para la instalación del SCT-Chile*. Programa MECESUP Bicentenario. [`1.Guia_Practica_SCT_Chile.pdf`]
+* del Valle, R. (2011). *Articulación y movilidad: Tensiones entre competencias y contenidos* [Presentación de seminario]. Seminario Internacional El Sistema de Créditos Transferibles, Pucón, Chile. [`1.Articulacion_y_Movilidad.pdf`]
+* Pey Tumanoff, R., & Chauriye Batarce, S. (2011). *Innovación curricular en las universidades del Consejo de Rectores 2000-2010*. Consejo de Rectores de las Universidades Chilenas. [`2.Informe_INNOVACION_CURRICULAR.pdf`]
+* Pey, R., Durán, F., & Jorquera, P. (2012). *Informe para la toma de decisiones sobre duración de las carreras de pregrado en el CRUCh*. Consejo de Rectores de las Universidades Chilenas. [`4.duracion_de_las_carreras de_pregrado_en_el_CRUCh.pdf`]
+* Universidad de Santiago de Chile. (2012). *Proyecto USA-1116: Desarrollo de un programa para la consolidación de la implementación del Sistema de Créditos Transferibles en las IES pertenecientes al CRUCH*. [`3.PROYECTO-USA-1116.pdf`]
+
+*(Nota: Este directorio también incluye evidencia comparada de movilidad internacional proveniente de la Universidad de Ottawa y Nuffic Holanda).*
+
+## 🧬 3. El Saber Ancestral y Tecnológico (La Resistencia)
+Estado del arte global que fundamenta la infraestructura de soberanía digital y reciprocidad de la Capa Sombra.
+
+* Arizmendi, L.-F. (2025). Barter and hierarchy: A practical perspective on food, society, and knowledge in the Inca Empire. *Journal of Arts, Humanities and Social Science, 2*(1). https://doi.org/10.69739/jahss.v2i1.502 [`barter-and-hierarchy.pdf`]
+* Baig, A. (2022). *A theoretical model of organizational resistance to Big Data implementation*. [`A_THEORETICAL_MODEL.pdf`]
+* Chinsook, P. (2022). *Big Data architecture for Student Behavior Analytics*. [`bigdata.pdf`]
+* Jin, M., & Yao, Y. (2022). *Influence mechanism of leadership on accounting ethics*. [`Influence_Mechanism_Leadership.pdf`]
+* Okutan, M. (2025). *Decentralized Autonomous Organizations (DAOs) and liquid democracy*. [`daos.pdf`]
+
     
 
 
