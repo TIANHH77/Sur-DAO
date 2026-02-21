@@ -1,5 +1,8 @@
+# --- SUR DAO: REQUERIMIENTOS DEL SISTEMA ---
 streamlit
 pandas
 plotly
-openpyxl
-numpy
+pyarrow
+fastparquet
+# --- AUDITORÍA Y GEODATOS ---
+requests

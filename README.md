@@ -32,16 +32,10 @@ graph TD
     G --> H
     H --> A 
 ```
-📡 2. Arquitectura de 4 Capas (Protocolo Técnico)
-Operamos bajo estándares de ingeniería de datos validados por el estado del arte internacional (2022-2025):
+## 📡 2. Arquitectura de 4 Capas (Protocolo Técnico)
+Operamos bajo estándares de ingeniería de datos validados por el estado del arte internacional/state of art, esto se refiere a almacenamiento Columnar (El paradigma Apache Arrow), arquitectura "Medallón" (Data Engineering), Versionamiento Híbrido (Git + LFS) y respaldo academico, ver referencias apa 7.
 
-Ingesta (Silos): unificar_todo_sies.py. Exorcismo y limpieza de 800MB de microdatos (cohortes 2018-2024). El paso del caos a la estructura.
-
-Forense (Motor Ris): motor_ris.py. Motor que calcula el "Saqueo Público". Operacionaliza la auditoría sobre la Brecha de Titulación Formal y Real (Pey et al., 2012), revelando un riesgo financiero sistémico superior a los $701.790 millones.
-
-Visualización (Atlas): sur_dao_trayectorias_humanas.py. Dashboard territorial donde el MRUN deja de ser un número y recupera su historia.
-
-Gobernanza (DAO): Basado en Okutan et al. (2025). Red descentralizada para una auditoría ciudadana ágil.
+**Ingesta (Silos):** `unificar_todo_sies.py` y `create_globals.py`. Limpieza de +800MB de microdatos restringida a las **cohortes 2012-2020**. Se excluyen ingresos posteriores (2021+) para neutralizar el margen de "retraso natural" de los estudiantes activos. El Motor RIS se concentra exclusivamente en las trayectorias que ya superaron con creces su duración formal y siguen financieramente cautivas. Transformación a Parquet de Clase Industrial.
 
 ⛓️ 3. La Evidencia del Secuestro Académico
 SUR DAO no es un capricho, es la respuesta forense a un sistema que la propia academia sabe que está roto:
@@ -53,19 +47,44 @@ La Confesión Institucional: El Proyecto USA-1116 (coordinado por la USACH) reco
 El Estándar de Trueque (uOttawa & Nuffic): Mientras instituciones globales convierten las horas de contacto en créditos transables, el sistema local fuerza a "partir de cero". Basados en la Guía Práctica SCT (1 año = 60 SCT), SUR DAO actúa como un Centro de Pericia Ciudadano, transformando las horas de vida invertidas en un activo inmutable.
 
 
-🛠️ 4. Instrucciones de Operación
-Si eres un "bicho raro", investigador, o parte de la gente común que quiere auditar su institución, levanta el entorno así:
+📥 4. Instrucciones de Operación (Actualizadas para Pesados)
+Para que el motor forense funcione, no basta con bajar el código; debes activar el montacargas de datos.
 
-# Instalar las herramientas de soberanía
-pip install pandas polars streamlit pyarrow
+A. Preparar el Hangar (Requisito Previo)
 
-# Ejecutar el Atlas Territorial
-streamlit run sur_dao_trayectorias_humanas.py
+Antes de clonar, debes tener instalado Git LFS.
 
-5. Referencias de la Resistencia
+Windows: Descarga el instalador desde git-lfs.com.
 
+Linux/Mac: brew install git-lfs o sudo apt install git-lfs.
 
-## 🏛️ 1. Reglamentación Institucional (Las Reglas del Juego)
+B. Clonación y Descarga de Datos
+# 1. Clonar el repositorio
+git clone https://github.com/TIANHH77/Sur-DAO.git
+cd Sur-DAO
+
+# 2. Inicializar y bajar los archivos pesados (.parquet)
+git lfs install
+git lfs pull
+
+C. Levantar el Entorno Humano
+# 3. Instalar dependencias
+pip install -r requirements.txt
+
+# 4. Ejecutar el Centro de Mando
+streamlit run sur_dao_app.py
+
+🧪 5. Guía de Replicación en Otros Territorios
+Si quieres aplicar este protocolo a otra base de datos o institución:
+Ingesta: Coloca tus archivos CSV en data/FUENTES_CRUDAS/.
+Normalización: Ejecuta python unificar_todo_sies.py para limpiar la data.
+Optimización: Ejecuta python create_globals.py para generar los archivos .parquet que alimentan el dashboard.
+Auditoría: Ajusta los parámetros en validador_sct.py según la normativa local de convalidación.
+
+🛡️ Nota Técnica sobre los Datos
+El archivo MATRICULA_GLOBAL.parquet (~670MB) contiene la memoria histórica procesada. Si experimentas lentitud en la carga inicial, es normal: el sistema está indexando millones de registros en caché para que las consultas posteriores sean instantáneas.
+
+## 🏛️  Reglamentación Institucional (Las Reglas del Juego)
 Documentos oficiales que demuestran la rigidez normativa y las barreras de convalidación en la educación superior chilena.
 
 * Universidad de Santiago de Chile. (2018). *Reglamento de convalidación de estudios* (Resolución N° 1983_09_05_2018). [`REGLAMENTO CONVALIDACION 1983_09_05_2018.pdf`]
